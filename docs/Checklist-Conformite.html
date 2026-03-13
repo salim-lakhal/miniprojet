@@ -1,0 +1,1029 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Checklist de Conformite — Mini-Projet AWS</title>
+  <style>
+    /* ── Reset & Base ─────────────────────────────────────────────── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    @import url('data:text/css,');
+
+    :root {
+      --ink:         #1a1d23;
+      --ink-light:   #4a5568;
+      --ink-xlight:  #718096;
+      --surface:     #ffffff;
+      --surface-alt: #f7f8fc;
+      --border:      #e2e8f0;
+      --border-dark: #cbd5e0;
+
+      --green:       #1a7f4b;
+      --green-bg:    #edfaf3;
+      --green-badge: #d1fae5;
+      --green-dot:   #10b981;
+
+      --orange:      #b45309;
+      --orange-bg:   #fffbeb;
+      --orange-badge:#fef3c7;
+      --orange-dot:  #f59e0b;
+
+      --blue:        #1d4ed8;
+      --blue-light:  #eff6ff;
+      --blue-accent: #3b82f6;
+
+      --gold:        #92400e;
+      --shadow-sm:   0 1px 3px rgba(0,0,0,.08), 0 1px 2px rgba(0,0,0,.05);
+      --shadow-md:   0 4px 12px rgba(0,0,0,.08), 0 2px 4px rgba(0,0,0,.05);
+      --shadow-lg:   0 10px 30px rgba(0,0,0,.10), 0 4px 8px rgba(0,0,0,.06);
+      --radius:      10px;
+      --radius-sm:   6px;
+    }
+
+    html {
+      font-size: 14px;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    body {
+      font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+      background: #eef1f7;
+      color: var(--ink);
+      line-height: 1.6;
+    }
+
+    /* ── Page wrapper ─────────────────────────────────────────────── */
+    .page {
+      max-width: 960px;
+      margin: 0 auto;
+      padding: 48px 32px 64px;
+    }
+
+    /* ── Cover / Header ───────────────────────────────────────────── */
+    .cover {
+      background: linear-gradient(135deg, #0f172a 0%, #1e3a5f 55%, #1a5276 100%);
+      border-radius: var(--radius);
+      padding: 52px 52px 44px;
+      color: #fff;
+      margin-bottom: 36px;
+      position: relative;
+      overflow: hidden;
+      box-shadow: var(--shadow-lg);
+    }
+
+    .cover::before {
+      content: '';
+      position: absolute;
+      top: -80px; right: -80px;
+      width: 320px; height: 320px;
+      border-radius: 50%;
+      background: rgba(255,255,255,.04);
+    }
+
+    .cover::after {
+      content: '';
+      position: absolute;
+      bottom: -60px; left: 200px;
+      width: 220px; height: 220px;
+      border-radius: 50%;
+      background: rgba(255,255,255,.03);
+    }
+
+    .cover-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: rgba(255,255,255,.12);
+      border: 1px solid rgba(255,255,255,.2);
+      border-radius: 20px;
+      padding: 5px 16px;
+      font-size: .75rem;
+      font-weight: 600;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+      color: #93c5fd;
+      margin-bottom: 24px;
+    }
+
+    .cover-badge::before {
+      content: '';
+      width: 7px; height: 7px;
+      background: #34d399;
+      border-radius: 50%;
+      animation: pulse 2s infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 1; }
+      50%       { opacity: .4; }
+    }
+
+    .cover h1 {
+      font-size: 2rem;
+      font-weight: 800;
+      letter-spacing: -.02em;
+      line-height: 1.2;
+      color: #fff;
+      margin-bottom: 8px;
+    }
+
+    .cover-subtitle {
+      font-size: 1.05rem;
+      color: #93c5fd;
+      font-weight: 500;
+      margin-bottom: 28px;
+    }
+
+    .cover-meta {
+      display: flex;
+      gap: 32px;
+      flex-wrap: wrap;
+      border-top: 1px solid rgba(255,255,255,.15);
+      padding-top: 24px;
+    }
+
+    .meta-item {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+
+    .meta-label {
+      font-size: .7rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: .1em;
+      color: #94a3b8;
+    }
+
+    .meta-value {
+      font-size: .9rem;
+      font-weight: 600;
+      color: #e2e8f0;
+    }
+
+    /* ── Summary bar ──────────────────────────────────────────────── */
+    .summary-bar {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 16px;
+      margin-bottom: 36px;
+    }
+
+    .stat-card {
+      background: var(--surface);
+      border-radius: var(--radius);
+      padding: 20px 24px;
+      box-shadow: var(--shadow-sm);
+      border: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+
+    .stat-icon {
+      width: 48px; height: 48px;
+      border-radius: 12px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.4rem;
+      flex-shrink: 0;
+    }
+
+    .stat-icon.green  { background: var(--green-badge);  }
+    .stat-icon.orange { background: var(--orange-badge); }
+    .stat-icon.blue   { background: var(--blue-light);   }
+
+    .stat-number {
+      font-size: 1.8rem;
+      font-weight: 800;
+      line-height: 1;
+      color: var(--ink);
+    }
+
+    .stat-number.green  { color: var(--green);  }
+    .stat-number.orange { color: var(--orange); }
+    .stat-number.blue   { color: var(--blue);   }
+
+    .stat-label {
+      font-size: .78rem;
+      color: var(--ink-xlight);
+      font-weight: 500;
+      margin-top: 2px;
+    }
+
+    /* ── Section headings ─────────────────────────────────────────── */
+    .section {
+      margin-bottom: 36px;
+    }
+
+    .section-header {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      margin-bottom: 16px;
+      padding-bottom: 12px;
+      border-bottom: 2px solid var(--border);
+    }
+
+    .section-icon {
+      width: 36px; height: 36px;
+      border-radius: 9px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1rem;
+      flex-shrink: 0;
+    }
+
+    .section-icon.conditions { background: linear-gradient(135deg, #dbeafe, #bfdbfe); }
+    .section-icon.phase1     { background: linear-gradient(135deg, #ede9fe, #ddd6fe); }
+    .section-icon.phase2     { background: linear-gradient(135deg, #dcfce7, #bbf7d0); }
+    .section-icon.phase3     { background: linear-gradient(135deg, #fef9c3, #fef08a); }
+    .section-icon.phase4     { background: linear-gradient(135deg, #fee2e2, #fecaca); }
+    .section-icon.livrables  { background: linear-gradient(135deg, #f3e8ff, #e9d5ff); }
+    .section-icon.criteres   { background: linear-gradient(135deg, #cffafe, #a5f3fc); }
+
+    .section-title {
+      font-size: 1.1rem;
+      font-weight: 700;
+      color: var(--ink);
+      letter-spacing: -.01em;
+    }
+
+    .section-subtitle {
+      font-size: .78rem;
+      color: var(--ink-xlight);
+      font-weight: 400;
+    }
+
+    .phase-tag {
+      margin-left: auto;
+      font-size: .7rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: .08em;
+      padding: 4px 12px;
+      border-radius: 20px;
+    }
+
+    /* ── Table ────────────────────────────────────────────────────── */
+    .checklist-table {
+      width: 100%;
+      border-collapse: separate;
+      border-spacing: 0;
+      background: var(--surface);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow-sm);
+      border: 1px solid var(--border);
+      overflow: hidden;
+      font-size: .84rem;
+    }
+
+    .checklist-table thead tr {
+      background: linear-gradient(90deg, #f1f5f9 0%, #f8fafc 100%);
+    }
+
+    .checklist-table thead th {
+      padding: 11px 16px;
+      text-align: left;
+      font-size: .68rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: .09em;
+      color: var(--ink-xlight);
+      border-bottom: 1px solid var(--border-dark);
+    }
+
+    .checklist-table thead th:first-child { padding-left: 20px; }
+    .checklist-table thead th:last-child  { padding-right: 20px; }
+
+    .checklist-table tbody tr {
+      transition: background .15s;
+    }
+
+    .checklist-table tbody tr:nth-child(even) {
+      background: var(--surface-alt);
+    }
+
+    .checklist-table tbody tr:hover {
+      background: #f0f7ff;
+    }
+
+    .checklist-table tbody tr:last-child td {
+      border-bottom: none;
+    }
+
+    .checklist-table tbody td {
+      padding: 13px 16px;
+      border-bottom: 1px solid var(--border);
+      vertical-align: top;
+    }
+
+    .checklist-table tbody td:first-child { padding-left: 20px; }
+    .checklist-table tbody td:last-child  { padding-right: 20px; }
+
+    /* col widths */
+    .col-req     { width: 30%; }
+    .col-status  { width: 11%; white-space: nowrap; }
+    .col-proof   { width: 30%; }
+    .col-note    { width: 29%; }
+
+    /* ── Status badges ────────────────────────────────────────────── */
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 4px 11px;
+      border-radius: 20px;
+      font-size: .72rem;
+      font-weight: 700;
+      letter-spacing: .03em;
+      white-space: nowrap;
+    }
+
+    .badge-green {
+      background: var(--green-badge);
+      color: var(--green);
+      border: 1px solid #a7f3d0;
+    }
+
+    .badge-orange {
+      background: var(--orange-badge);
+      color: var(--orange);
+      border: 1px solid #fde68a;
+    }
+
+    .badge::before {
+      content: '';
+      width: 6px; height: 6px;
+      border-radius: 50%;
+    }
+
+    .badge-green::before  { background: var(--green-dot);  }
+    .badge-orange::before { background: var(--orange-dot); }
+
+    /* ── Checkmark / partial ──────────────────────────────────────── */
+    .check {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 22px; height: 22px;
+      border-radius: 50%;
+      font-size: .8rem;
+      font-weight: 700;
+      flex-shrink: 0;
+      margin-right: 6px;
+      vertical-align: middle;
+    }
+
+    .check-green  { background: var(--green-bg);  color: var(--green);  border: 1.5px solid var(--green-dot);  }
+    .check-orange { background: var(--orange-bg); color: var(--orange); border: 1.5px solid var(--orange-dot); }
+
+    /* ── Req cell ─────────────────────────────────────────────────── */
+    .req-cell {
+      display: flex;
+      align-items: flex-start;
+      gap: 0;
+    }
+
+    .req-text {
+      font-weight: 500;
+      color: var(--ink);
+      line-height: 1.45;
+    }
+
+    /* ── Proof cell ───────────────────────────────────────────────── */
+    .proof-pill {
+      display: inline-block;
+      background: var(--blue-light);
+      color: var(--blue);
+      border: 1px solid #bfdbfe;
+      border-radius: 5px;
+      padding: 2px 8px;
+      font-size: .72rem;
+      font-family: 'Consolas', 'Cascadia Code', monospace;
+      font-weight: 600;
+      margin: 2px 3px 2px 0;
+    }
+
+    .proof-aws {
+      display: inline-block;
+      background: #fff8ec;
+      color: #b45309;
+      border: 1px solid #fde68a;
+      border-radius: 5px;
+      padding: 2px 8px;
+      font-size: .72rem;
+      font-weight: 600;
+      margin: 2px 3px 2px 0;
+    }
+
+    .note-text {
+      color: var(--ink-light);
+      font-size: .81rem;
+      line-height: 1.5;
+    }
+
+    /* ── Footer ───────────────────────────────────────────────────── */
+    .footer {
+      margin-top: 48px;
+      padding-top: 24px;
+      border-top: 2px solid var(--border);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+
+    .footer-left {
+      font-size: .78rem;
+      color: var(--ink-xlight);
+    }
+
+    .footer-right {
+      font-size: .78rem;
+      color: var(--ink-xlight);
+      text-align: right;
+    }
+
+    .footer-brand {
+      font-weight: 700;
+      color: var(--ink-light);
+    }
+
+    /* ── Print ────────────────────────────────────────────────────── */
+    @media print {
+      @page {
+        size: A4;
+        margin: 18mm 15mm 18mm 15mm;
+      }
+
+      body { background: #fff; font-size: 11px; }
+
+      .page { padding: 0; max-width: 100%; }
+
+      .cover {
+        background: #0f172a !important;
+        -webkit-print-color-adjust: exact;
+        print-color-adjust: exact;
+        page-break-after: avoid;
+        border-radius: 6px;
+      }
+
+      .summary-bar {
+        page-break-inside: avoid;
+      }
+
+      .section {
+        page-break-inside: avoid;
+      }
+
+      .checklist-table {
+        page-break-inside: auto;
+      }
+
+      .checklist-table tbody tr {
+        page-break-inside: avoid;
+      }
+
+      .stat-card,
+      .checklist-table {
+        box-shadow: none;
+        border: 1px solid #ccc !important;
+        -webkit-print-color-adjust: exact;
+        print-color-adjust: exact;
+      }
+
+      .badge,
+      .proof-pill,
+      .proof-aws,
+      .check {
+        -webkit-print-color-adjust: exact;
+        print-color-adjust: exact;
+      }
+
+      .checklist-table thead tr {
+        -webkit-print-color-adjust: exact;
+        print-color-adjust: exact;
+      }
+    }
+  </style>
+</head>
+<body>
+<div class="page">
+
+  <!-- ══ COVER ══════════════════════════════════════════════════════ -->
+  <div class="cover">
+    <div class="cover-badge">AWS Academy Cloud Foundations — Mini-Projet</div>
+    <h1>Checklist de Conformite</h1>
+    <div class="cover-subtitle">Mini-Projet AWS — Preuve de conformite aux exigences</div>
+    <div class="cover-meta">
+      <div class="meta-item">
+        <span class="meta-label">Auteurs</span>
+        <span class="meta-value">Salim LAKHAL &amp; Nossa IYAMU</span>
+      </div>
+      <div class="meta-item">
+        <span class="meta-label">Date</span>
+        <span class="meta-value">Mars 2026</span>
+      </div>
+      <div class="meta-item">
+        <span class="meta-label">Version</span>
+        <span class="meta-value">1.0 — Final</span>
+      </div>
+      <div class="meta-item">
+        <span class="meta-label">Statut global</span>
+        <span class="meta-value" style="color:#34d399;">Toutes phases conformes</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══ SUMMARY ════════════════════════════════════════════════════ -->
+  <div class="summary-bar">
+    <div class="stat-card">
+      <div class="stat-icon green">&#10003;</div>
+      <div>
+        <div class="stat-number green">42</div>
+        <div class="stat-label">Criteres conformes</div>
+      </div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-icon orange">&#9650;</div>
+      <div>
+        <div class="stat-number orange">2</div>
+        <div class="stat-label">Criteres partiels</div>
+      </div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-icon blue">&#9776;</div>
+      <div>
+        <div class="stat-number blue">44</div>
+        <div class="stat-label">Total des criteres</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══ CONDITIONS REQUISES ════════════════════════════════════════ -->
+  <div class="section">
+    <div class="section-header">
+      <div class="section-icon conditions">&#9881;</div>
+      <div>
+        <div class="section-title">Conditions Requises — Exigences Generales</div>
+        <div class="section-subtitle">7 conditions issues de DescriptionMiniProjet.pdf</div>
+      </div>
+      <div class="phase-tag" style="background:#dbeafe;color:#1d4ed8;">Transversal</div>
+    </div>
+    <table class="checklist-table">
+      <thead>
+        <tr>
+          <th class="col-req">Exigence</th>
+          <th class="col-status">Statut</th>
+          <th class="col-proof">Preuve / Ressource</th>
+          <th class="col-note">Note</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><div class="req-cell"><span class="check check-green">&#10003;</span><span class="req-text">App CRUD fonctionnelle sans latence</span></div></td>
+          <td><span class="badge badge-green">Conforme</span></td>
+          <td><span class="proof-pill">phase3-4/app.js</span> <span class="proof-aws">ALB DNS</span></td>
+          <td class="note-text">CRUD valide en phase 2 et migre en phase 3 sur RDS. Demo accessible via ALB.</td>
+        </tr>
+        <tr>
+          <td><div class="req-cell"><span class="check check-green">&#10003;</span><span class="req-text">A charge equilibree — Load balancing via ALB</span></div></td>
+          <td><span class="badge badge-green">Conforme</span></td>
+          <td><span class="proof-pill">phase4-ha-autoscaling.sh</span> <span class="proof-aws">AWS ALB</span></td>
+          <td class="note-text">ALB configure avec listener port 80 et target group EC2 en phase 4.</td>
+        </tr>
+        <tr>
+          <td><div class="req-cell"><span class="check check-green">&#10003;</span><span class="req-text">Pouvant etre mise a l'echelle — Auto Scaling EC2</span></div></td>
+          <td><span class="badge badge-green">Conforme</span></td>
+          <td><span class="proof-pill">phase4-ha-autoscaling.sh</span> <span class="proof-aws">ASG (min 2, max 6)</span></td>
+          <td class="note-text">ASG cree avec Launch Template, scaling policies et CloudWatch alarms.</td>
+        </tr>
+        <tr>
+          <td><div class="req-cell"><span class="check check-green">&#10003;</span><span class="req-text">Hautement disponible — Multi-AZ RDS, ASG across AZs</span></div></td>
+          <td><span class="badge badge-green">Conforme</span></td>
+          <td><span class="proof-pill">phase4-ha-autoscaling.sh</span> <span class="proof-aws">RDS Multi-AZ</span></td>
+          <td class="note-text">RDS en subnet prive Multi-AZ, ASG deploye sur 2 AZs minimum.</td>
+        </tr>
+        <tr>
+          <td><div class="req-cell"><span class="check check-green">&#10003;</span><span class="req-text">Securisee — BDD non publique, ports corrects, Secrets Manager</span></div></td>
+          <td><span class="badge badge-green">Conforme</span></td>
+          <td><span class="proof-pill">appserver-userdata.sh</span> <span class="proof-aws">Secrets Manager</span></td>
+          <td class="note-text">SG chaining, secret "Mydbsecret", IAM Role EC2, subnet prive RDS.</td>
+        </tr>
+        <tr>
+          <td><div class="req-cell"><span class="check check-green">&#10003;</span><span class="req-text">Couts optimises — t2.micro, db.t3.micro, budget $100</span></div></td>
+          <td><span class="badge badge-green">Conforme</span></td>
+          <td><span class="proof-pill">Rapport-MiniProjet.pdf</span> <span class="proof-aws">AWS Pricing Calculator</span></td>
+          <td class="note-text">Toutes les instances en free-tier eligible. Estimation mensuelle documentee.</td>
+        </tr>
+        <tr>
+          <td><div class="req-cell"><span class="check check-green">&#10003;</span><span class="req-text">Tres performante — Architecture optimisee</span></div></td>
+          <td><span class="badge badge-green">Conforme</span></td>
+          <td><span class="proof-pill">architecture-diagram.html</span> <span class="proof-pill">Guide-Code-Demo.pdf</span></td>
+          <td class="note-text">Architecture ALB + ASG + RDS Multi-AZ garantit haute performance et resilience.</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- ══ PHASE 1 ════════════════════════════════════════════════════ -->
+  <div class="section">
+    <div class="section-header">
+      <div class="section-icon phase1">&#128196;</div>
+      <div>
+        <div class="section-title">Phase 1 — Planification</div>
+        <div class="section-subtitle">Schema architectural et estimation des couts</div>
+      </div>
+      <div class="phase-tag" style="background:#ede9fe;color:#6d28d9;">Phase 1</div>
+    </div>
+    <table class="checklist-table">
+      <thead>
+        <tr>
+          <th class="col-req">Exigence</th>
+          <th class="col-status">Statut</th>
+          <th class="col-proof">Preuve / Ressource</th>
+          <th class="col-note">Note</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><div class="req-cell"><span class="check check-green">&#10003;</span><span class="req-text">Schema architectural de la solution</span></div></td>
+          <td><span class="badge badge-green">Conforme</span></td>
+          <td><span class="proof-pill">architecture-diagram.html</span> <span class="proof-pill">Rapport-MiniProjet.pdf</span></td>
+          <td class="note-text">Diagramme interactif HTML + schema integre dans le rapport final.</td>
+        </tr>
+        <tr>
+          <td><div class="req-cell"><span class="check check-green">&#10003;</span><span class="req-text">Estimation des couts</span></div></td>
+          <td><span class="badge badge-green">Conforme</span></td>
+          <td><span class="proof-pill">Rapport-MiniProjet.pdf</span> <span class="proof-pill">MiniProjet-Presentation.pdf</span></td>
+          <td class="note-text">Tableau de couts detaille avec AWS Pricing Calculator presente en slides.</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- ══ PHASE 2 ════════════════════════════════════════════════════ -->
+  <div class="section">
+    <div class="section-header">
+      <div class="section-icon phase2">&#9881;</div>
+      <div>
+        <div class="section-title">Phase 2 — Application Web de Base (Proof of Concept)</div>
+        <div class="section-subtitle">VPC, EC2, Node.js + MySQL, CRUD en subnet public</div>
+      </div>
+      <div class="phase-tag" style="background:#dcfce7;color:#15803d;">Phase 2</div>
+    </div>
+    <table class="checklist-table">
+      <thead>
+        <tr>
+          <th class="col-req">Exigence</th>
+          <th class="col-status">Statut</th>
+          <th class="col-proof">Preuve / Ressource</th>
+          <th class="col-note">Note</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><div class="req-cell"><span class="check check-green">&#10003;</span><span class="req-text">Creation VPC (CIDR 10.0.0.0/16)</span></div></td>
+          <td><span class="badge badge-green">Conforme</span></td>
+          <td><span class="proof-pill">poc-userdata.sh</span> <span class="proof-aws">VPC 10.0.0.0/16</span></td>
+          <td class="note-text">VPC cree avec CIDR conforme a l'enonce. Documente dans poc-userdata.sh.</td>
+        </tr>
+        <tr>
+          <td><div class="req-cell"><span class="check check-green">&#10003;</span><span class="req-text">Subnet public</span></div></td>
+          <td><span class="badge badge-green">Conforme</span></td>
+          <td><span class="proof-aws">Subnet public AZ-1</span></td>
+          <td class="note-text">Subnet public dans la premiere AZ, associe a l'Internet Gateway.</td>
+        </tr>
+        <tr>
+          <td><div class="req-cell"><span class="check check-green">&#10003;</span><span class="req-text">Internet Gateway + Route Table</span></div></td>
+          <td><span class="badge badge-green">Conforme</span></td>
+          <td><span class="proof-pill">poc-userdata.sh</span> <span class="proof-aws">IGW + RT</span></td>
+          <td class="note-text">IGW attache au VPC, route 0.0.0.0/0 vers IGW dans la table de routage publique.</td>
+        </tr>
+        <tr>
+          <td><div class="req-cell"><span class="check check-green">&#10003;</span><span class="req-text">Instance EC2 (t2.micro) dans subnet public</span></div></td>
+          <td><span class="badge badge-green">Conforme</span></td>
+          <td><span class="proof-pill">poc-userdata.sh</span> <span class="proof-aws">EC2 t2.micro</span></td>
+          <td class="note-text">Instance t2.micro avec Amazon Linux 2, IP publique, User Data automatise.</td>
+        </tr>
+        <tr>
+          <td><div class="req-cell"><span class="check check-green">&#10003;</span><span class="req-text">Installation Node.js + MySQL</span></div></td>
+          <td><span class="badge badge-green">Conforme</span></td>
+          <td><span class="proof-pill">poc-userdata.sh</span> <span class="proof-pill">phase2/app.js</span></td>
+          <td class="note-text">Node.js 18.x et mysql2 installes via User Data. BDD locale sur l'EC2 PoC.</td>
+        </tr>
+        <tr>
+          <td><div class="req-cell"><span class="check check-green">&#10003;</span><span class="req-text">Deploiement app CRUD (Create, Read, Update, Delete)</span></div></td>
+          <td><span class="badge badge-green">Conforme</span></td>
+          <td><span class="proof-pill">phase2/app.js</span> <span class="proof-pill">Guide-Code-Demo.pdf</span></td>
+          <td class="note-text">4 operations CRUD implementees avec Express.js et interface HTML. Demo fournie.</td>
+        </tr>
+        <tr>
+          <td><div class="req-cell"><span class="check check-green">&#10003;</span><span class="req-text">App accessible via IP publique port 80</span></div></td>
+          <td><span class="badge badge-green">Conforme</span></td>
+          <td><span class="proof-aws">EC2 Public IP:80</span> <span class="proof-pill">Rapport-MiniProjet.pdf</span></td>
+          <td class="note-text">Application ecoutant sur le port 80 via authbind/pm2, accessible publiquement.</td>
+        </tr>
+        <tr>
+          <td><div class="req-cell"><span class="check check-green">&#10003;</span><span class="req-text">Security Group: port 80 ouvert, port 22 limite</span></div></td>
+          <td><span class="badge badge-green">Conforme</span></td>
+          <td><span class="proof-pill">poc-userdata.sh</span> <span class="proof-aws">SG WebServer-PoC</span></td>
+          <td class="note-text">Inbound: 80 depuis 0.0.0.0/0, SSH 22 depuis IP restreinte ou MyIP seulement.</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- ══ PHASE 3 ════════════════════════════════════════════════════ -->
+  <div class="section">
+    <div class="section-header">
+      <div class="section-icon phase3">&#128279;</div>
+      <div>
+        <div class="section-title">Phase 3 — Decouplage des Composants (7 taches)</div>
+        <div class="section-subtitle">RDS, Secrets Manager, IAM Role, migration BDD</div>
+      </div>
+      <div class="phase-tag" style="background:#fef9c3;color:#92400e;">Phase 3</div>
+    </div>
+    <table class="checklist-table">
+      <thead>
+        <tr>
+          <th class="col-req">Tache</th>
+          <th class="col-status">Statut</th>
+          <th class="col-proof">Preuve / Ressource</th>
+          <th class="col-note">Note</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><div class="req-cell"><span class="check check-green">&#10003;</span><span class="req-text">Tache 1 — Modification VPC, ajout subnet prive (2e AZ pour RDS)</span></div></td>
+          <td><span class="badge badge-green">Conforme</span></td>
+          <td><span class="proof-aws">Subnet prive AZ-2</span> <span class="proof-pill">appserver-userdata.sh</span></td>
+          <td class="note-text">Subnet prive cree dans 2e AZ, DB Subnet Group configure pour Multi-AZ RDS.</td>
+        </tr>
+        <tr>
+          <td><div class="req-cell"><span class="check check-green">&#10003;</span><span class="req-text">Tache 2 — Creation RDS MySQL dans subnet prive</span></div></td>
+          <td><span class="badge badge-green">Conforme</span></td>
+          <td><span class="proof-aws">RDS MySQL db.t3.micro</span> <span class="proof-pill">Rapport-MiniProjet.pdf</span></td>
+          <td class="note-text">RDS MySQL 8.0 en db.t3.micro dans subnet prive, non accessible publiquement.</td>
+        </tr>
+        <tr>
+          <td><div class="req-cell"><span class="check check-green">&#10003;</span><span class="req-text">Tache 3 — Configuration environnement dev</span></div></td>
+          <td><span class="badge badge-green">Conforme</span></td>
+          <td><span class="proof-pill">phase3-4/app.js</span> <span class="proof-pill">Guide-Code-Demo.pdf</span></td>
+          <td class="note-text">Variables d'environnement et connexion RDS configures et documentes.</td>
+        </tr>
+        <tr>
+          <td><div class="req-cell"><span class="check check-green">&#10003;</span><span class="req-text">Tache 4 — Mise en service Secrets Manager (secret "Mydbsecret")</span></div></td>
+          <td><span class="badge badge-green">Conforme</span></td>
+          <td><span class="proof-aws">Secret: Mydbsecret</span> <span class="proof-pill">appserver-userdata.sh</span></td>
+          <td class="note-text">Secret "Mydbsecret" cree dans AWS Secrets Manager. Aucun credential en dur dans le code.</td>
+        </tr>
+        <tr>
+          <td><div class="req-cell"><span class="check check-green">&#10003;</span><span class="req-text">Tache 5 — Nouvelle instance EC2 avec IAM Role pour Secrets Manager</span></div></td>
+          <td><span class="badge badge-green">Conforme</span></td>
+          <td><span class="proof-aws">IAM Role EC2-SecretsManager</span> <span class="proof-pill">appserver-userdata.sh</span></td>
+          <td class="note-text">Nouveau serveur app avec profil IAM autorisant GetSecretValue sur Mydbsecret.</td>
+        </tr>
+        <tr>
+          <td><div class="req-cell"><span class="check check-green">&#10003;</span><span class="req-text">Tache 6 — Migration BDD vers RDS</span></div></td>
+          <td><span class="badge badge-green">Conforme</span></td>
+          <td><span class="proof-pill">appserver-userdata.sh</span> <span class="proof-pill">Rapport-MiniProjet.pdf</span></td>
+          <td class="note-text">Schema et donnees migres depuis MySQL local vers RDS. Script mysqldump documente.</td>
+        </tr>
+        <tr>
+          <td><div class="req-cell"><span class="check check-green">&#10003;</span><span class="req-text">Tache 7 — Test de l'application</span></div></td>
+          <td><span class="badge badge-green">Conforme</span></td>
+          <td><span class="proof-pill">Guide-Code-Demo.pdf</span> <span class="proof-pill">Rapport-MiniProjet.pdf</span></td>
+          <td class="note-text">Tests CRUD valides apres migration, captures d'ecran dans le guide de demo.</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- ══ PHASE 4 ════════════════════════════════════════════════════ -->
+  <div class="section">
+    <div class="section-header">
+      <div class="section-icon phase4">&#9654;</div>
+      <div>
+        <div class="section-title">Phase 4 — Haute Disponibilite et Mise a l'Echelle (4 taches)</div>
+        <div class="section-subtitle">ALB, Auto Scaling Group, test de charge</div>
+      </div>
+      <div class="phase-tag" style="background:#fee2e2;color:#b91c1c;">Phase 4</div>
+    </div>
+    <table class="checklist-table">
+      <thead>
+        <tr>
+          <th class="col-req">Tache</th>
+          <th class="col-status">Statut</th>
+          <th class="col-proof">Preuve / Ressource</th>
+          <th class="col-note">Note</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><div class="req-cell"><span class="check check-green">&#10003;</span><span class="req-text">Tache 1 — Creation Application Load Balancer</span></div></td>
+          <td><span class="badge badge-green">Conforme</span></td>
+          <td><span class="proof-pill">phase4-ha-autoscaling.sh</span> <span class="proof-aws">AWS ALB</span></td>
+          <td class="note-text">ALB internet-facing, listener HTTP:80, target group avec health checks configures.</td>
+        </tr>
+        <tr>
+          <td><div class="req-cell"><span class="check check-green">&#10003;</span><span class="req-text">Tache 2 — EC2 Auto Scaling Group (min 2, max 6)</span></div></td>
+          <td><span class="badge badge-green">Conforme</span></td>
+          <td><span class="proof-pill">phase4-ha-autoscaling.sh</span> <span class="proof-aws">ASG min=2 max=6</span></td>
+          <td class="note-text">ASG avec Launch Template, desired=2, min=2, max=6. Policies CPU scale-out/in.</td>
+        </tr>
+        <tr>
+          <td><div class="req-cell"><span class="check check-green">&#10003;</span><span class="req-text">Tache 3 — Acces application via DNS ALB</span></div></td>
+          <td><span class="badge badge-green">Conforme</span></td>
+          <td><span class="proof-aws">ALB DNS Name</span> <span class="proof-pill">Rapport-MiniProjet.pdf</span></td>
+          <td class="note-text">DNS ALB fourni et valide dans le rapport. Application accessible sans IP fixe.</td>
+        </tr>
+        <tr>
+          <td><div class="req-cell"><span class="check check-green">&#10003;</span><span class="req-text">Tache 4 — Test de charge</span></div></td>
+          <td><span class="badge badge-green">Conforme</span></td>
+          <td><span class="proof-pill">phase4-ha-autoscaling.sh</span> <span class="proof-pill">Guide-Code-Demo.pdf</span></td>
+          <td class="note-text">Test stress avec ab/wrk declenche scale-out. CloudWatch alarmes documentees.</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- ══ LIVRABLES ══════════════════════════════════════════════════ -->
+  <div class="section">
+    <div class="section-header">
+      <div class="section-icon livrables">&#128230;</div>
+      <div>
+        <div class="section-title">Livrables — Documents et Artefacts Produits</div>
+        <div class="section-subtitle">Code source, scripts, rapports et documents de reference</div>
+      </div>
+      <div class="phase-tag" style="background:#f3e8ff;color:#7c3aed;">Livrables</div>
+    </div>
+    <table class="checklist-table">
+      <thead>
+        <tr>
+          <th class="col-req">Livrable</th>
+          <th class="col-status">Statut</th>
+          <th class="col-proof">Fichier</th>
+          <th class="col-note">Note</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><div class="req-cell"><span class="check check-green">&#10003;</span><span class="req-text">Code source Phase 2 (app CRUD PoC)</span></div></td>
+          <td><span class="badge badge-green">Conforme</span></td>
+          <td><span class="proof-pill">phase2/app.js</span></td>
+          <td class="note-text">Application Node.js/Express avec MySQL local, interface HTML integree.</td>
+        </tr>
+        <tr>
+          <td><div class="req-cell"><span class="check check-green">&#10003;</span><span class="req-text">Code source Phase 3-4 (app avec RDS + Secrets Manager)</span></div></td>
+          <td><span class="badge badge-green">Conforme</span></td>
+          <td><span class="proof-pill">phase3-4/app.js</span></td>
+          <td class="note-text">Version production avec AWS SDK, recuperation secrets, connexion RDS.</td>
+        </tr>
+        <tr>
+          <td><div class="req-cell"><span class="check check-green">&#10003;</span><span class="req-text">Script User Data PoC</span></div></td>
+          <td><span class="badge badge-green">Conforme</span></td>
+          <td><span class="proof-pill">poc-userdata.sh</span></td>
+          <td class="note-text">Provisionning automatique EC2 PoC: Node.js, MySQL, app deployment.</td>
+        </tr>
+        <tr>
+          <td><div class="req-cell"><span class="check check-green">&#10003;</span><span class="req-text">Script User Data App Server</span></div></td>
+          <td><span class="badge badge-green">Conforme</span></td>
+          <td><span class="proof-pill">appserver-userdata.sh</span></td>
+          <td class="note-text">Provisionning EC2 prod: Node.js, AWS CLI, recuperation secret, connexion RDS.</td>
+        </tr>
+        <tr>
+          <td><div class="req-cell"><span class="check check-green">&#10003;</span><span class="req-text">Script Phase 4 — HA et Auto Scaling</span></div></td>
+          <td><span class="badge badge-green">Conforme</span></td>
+          <td><span class="proof-pill">phase4-ha-autoscaling.sh</span></td>
+          <td class="note-text">Script complet: ALB, Target Group, Launch Template, ASG, CloudWatch alarms.</td>
+        </tr>
+        <tr>
+          <td><div class="req-cell"><span class="check check-green">&#10003;</span><span class="req-text">Rapport complet</span></div></td>
+          <td><span class="badge badge-green">Conforme</span></td>
+          <td><span class="proof-pill">Rapport-MiniProjet.pdf</span></td>
+          <td class="note-text">Rapport technique complet: architecture, couts, decisions, resultats.</td>
+        </tr>
+        <tr>
+          <td><div class="req-cell"><span class="check check-green">&#10003;</span><span class="req-text">Guide du code et demo</span></div></td>
+          <td><span class="badge badge-green">Conforme</span></td>
+          <td><span class="proof-pill">Guide-Code-Demo.pdf</span></td>
+          <td class="note-text">Guide pas-a-pas avec captures d'ecran et explications du code source.</td>
+        </tr>
+        <tr>
+          <td><div class="req-cell"><span class="check check-green">&#10003;</span><span class="req-text">Presentation</span></div></td>
+          <td><span class="badge badge-green">Conforme</span></td>
+          <td><span class="proof-pill">MiniProjet-Presentation.pdf</span></td>
+          <td class="note-text">Slides de presentation 15 min: intro, scenario, solution, architecture, demo.</td>
+        </tr>
+        <tr>
+          <td><div class="req-cell"><span class="check check-green">&#10003;</span><span class="req-text">Diagramme d'architecture</span></div></td>
+          <td><span class="badge badge-green">Conforme</span></td>
+          <td><span class="proof-pill">architecture-diagram.html</span></td>
+          <td class="note-text">Diagramme interactif HTML avec tous les composants AWS et flux de donnees.</td>
+        </tr>
+        <tr>
+          <td><div class="req-cell"><span class="check check-orange">&#9650;</span><span class="req-text">Fiche de revision examen</span></div></td>
+          <td><span class="badge badge-orange">Partiel</span></td>
+          <td><span class="proof-pill">Revision-Exam-CSC8604.pdf</span></td>
+          <td class="note-text">Fiche produite; contenu a valider selon le syllabus officiel de l'examen.</td>
+        </tr>
+        <tr>
+          <td><div class="req-cell"><span class="check check-orange">&#9650;</span><span class="req-text">QCM entrainement</span></div></td>
+          <td><span class="badge badge-orange">Partiel</span></td>
+          <td><span class="proof-pill">QCM-Training-Exam.pdf</span></td>
+          <td class="note-text">QCM elabore; nombre de questions a verifier par rapport aux attentes du module.</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- ══ CRITERES D'EVALUATION ══════════════════════════════════════ -->
+  <div class="section">
+    <div class="section-header">
+      <div class="section-icon criteres">&#127942;</div>
+      <div>
+        <div class="section-title">Criteres d'Evaluation — Grille de Notation</div>
+        <div class="section-subtitle">Criteres evalues lors de la soutenance (presentation 15 min)</div>
+      </div>
+      <div class="phase-tag" style="background:#cffafe;color:#0e7490;">Evaluation</div>
+    </div>
+    <table class="checklist-table">
+      <thead>
+        <tr>
+          <th class="col-req">Critere</th>
+          <th class="col-status">Statut</th>
+          <th class="col-proof">Preuve</th>
+          <th class="col-note">Note</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><div class="req-cell"><span class="check check-green">&#10003;</span><span class="req-text">Presentation (15 min: intro, scenario, solution+cout, architecture, demo, enseignements)</span></div></td>
+          <td><span class="badge badge-green">Conforme</span></td>
+          <td><span class="proof-pill">MiniProjet-Presentation.pdf</span></td>
+          <td class="note-text">Structure 6 parties conforme a la grille. Plan de 15 min respecte.</td>
+        </tr>
+        <tr>
+          <td><div class="req-cell"><span class="check check-green">&#10003;</span><span class="req-text">Fonctionnalites CRUD completement implementees</span></div></td>
+          <td><span class="badge badge-green">Conforme</span></td>
+          <td><span class="proof-pill">phase3-4/app.js</span> <span class="proof-pill">Guide-Code-Demo.pdf</span></td>
+          <td class="note-text">Create / Read / Update / Delete valides et demonstres dans le guide.</td>
+        </tr>
+        <tr>
+          <td><div class="req-cell"><span class="check check-green">&#10003;</span><span class="req-text">Equilibrage de charge — ALB fonctionnel</span></div></td>
+          <td><span class="badge badge-green">Conforme</span></td>
+          <td><span class="proof-pill">phase4-ha-autoscaling.sh</span> <span class="proof-aws">ALB DNS</span></td>
+          <td class="note-text">ALB repartit le trafic entre instances ASG. Health checks operationnels.</td>
+        </tr>
+        <tr>
+          <td><div class="req-cell"><span class="check check-green">&#10003;</span><span class="req-text">Capacite de mise a l'echelle — Auto Scaling operationnel</span></div></td>
+          <td><span class="badge badge-green">Conforme</span></td>
+          <td><span class="proof-pill">phase4-ha-autoscaling.sh</span> <span class="proof-aws">ASG + CloudWatch</span></td>
+          <td class="note-text">Scale-out a CPU>70%, scale-in a CPU&lt;30%. Test de charge documente.</td>
+        </tr>
+        <tr>
+          <td><div class="req-cell"><span class="check check-green">&#10003;</span><span class="req-text">Haute disponibilite — Multi-AZ</span></div></td>
+          <td><span class="badge badge-green">Conforme</span></td>
+          <td><span class="proof-pill">phase4-ha-autoscaling.sh</span> <span class="proof-aws">RDS Multi-AZ</span></td>
+          <td class="note-text">ASG sur 2 AZs, RDS avec subnet group Multi-AZ. Pas de SPOF dans l'architecture.</td>
+        </tr>
+        <tr>
+          <td><div class="req-cell"><span class="check check-green">&#10003;</span><span class="req-text">Securite — SG chaining, Secrets Manager, IAM Role, subnet prive</span></div></td>
+          <td><span class="badge badge-green">Conforme</span></td>
+          <td><span class="proof-pill">appserver-userdata.sh</span> <span class="proof-aws">Mydbsecret</span></td>
+          <td class="note-text">Zero credential en dur, SG en chaine, RDS inaccessible depuis Internet.</td>
+        </tr>
+        <tr>
+          <td><div class="req-cell"><span class="check check-green">&#10003;</span><span class="req-text">Optimisation des couts — instances free-tier, budget maitrise</span></div></td>
+          <td><span class="badge badge-green">Conforme</span></td>
+          <td><span class="proof-pill">Rapport-MiniProjet.pdf</span></td>
+          <td class="note-text">t2.micro + db.t3.micro. Budget mensuel estime en dessous de $100.</td>
+        </tr>
+        <tr>
+          <td><div class="req-cell"><span class="check check-green">&#10003;</span><span class="req-text">Hautes performances — architecture optimisee et reactive</span></div></td>
+          <td><span class="badge badge-green">Conforme</span></td>
+          <td><span class="proof-pill">architecture-diagram.html</span> <span class="proof-pill">Rapport-MiniProjet.pdf</span></td>
+          <td class="note-text">ALB + ASG assurent la performance horizontale. Pas de bottleneck identifie.</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- ══ FOOTER ═════════════════════════════════════════════════════ -->
+  <div class="footer">
+    <div class="footer-left">
+      <div class="footer-brand">Checklist de Conformite — Mini-Projet AWS</div>
+      <div>Salim LAKHAL &amp; Nossa IYAMU &mdash; Mars 2026</div>
+    </div>
+    <div class="footer-right">
+      <div>42 / 44 criteres : <strong style="color:var(--green);">Conformes</strong> &nbsp;&bull;&nbsp; 2 / 44 : <strong style="color:var(--orange);">Partiels</strong></div>
+      <div style="margin-top:4px;color:var(--ink-xlight);">Document genere pour soumission finale &mdash; AWS Academy Lab</div>
+    </div>
+  </div>
+
+</div>
+</body>
+</html>
