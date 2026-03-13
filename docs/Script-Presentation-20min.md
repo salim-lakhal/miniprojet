@@ -79,7 +79,6 @@
   - Le trafic passe par l'**Internet Gateway** du VPC
   - Il arrive sur l'**Application Load Balancer** qui ecoute sur le port 80
 - L'ALB repartit le trafic entre **deux EC2** dans deux Availability Zones differentes
-  - Chaque EC2 fait tourner Node.js 18 avec Express, sur Ubuntu 22.04
   - Elles sont gerees par un **Auto Scaling Group** (min 2, max 4, cible CPU 50%)
 - Les EC2 se connectent a **Amazon RDS MySQL** dans les **subnets prives**
   - La BDD n'est **pas accessible depuis Internet**, uniquement depuis le Security Group des serveurs web
