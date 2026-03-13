@@ -1,0 +1,14 @@
+[Unit]
+Description=Student App
+After=network.target
+
+[Service]
+Type=simple
+User=root
+WorkingDirectory=/home/ubuntu/app
+ExecStart=/usr/local/bin/node app.js
+Restart=on-failure
+RestartSec=5
+
+[Install]
+WantedBy=multi-user.target

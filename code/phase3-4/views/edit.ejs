@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html><head><title>Edit Student</title>
+<style>body{font-family:Arial;margin:20px}input{margin:5px;padding:5px;width:300px}button{padding:10px 20px;background:#FF9800;color:white;border:none;cursor:pointer}</style>
+</head><body>
+<h1>Edit Student</h1>
+<form method="POST" action="/edit/<%= student.id %>">
+<div>Name: <input name="name" value="<%= student.name %>" required></div>
+<div>Address: <input name="address" value="<%= student.address %>" required></div>
+<div>City: <input name="city" value="<%= student.city %>" required></div>
+<div>State: <input name="state" value="<%= student.state %>" required></div>
+<div>Email: <input name="email" value="<%= student.email %>" type="email" required></div>
+<div>Phone: <input name="phone" value="<%= student.phone %>" required></div>
+<button type="submit">Update</button>
+</form>
+<a href="/">Back</a>
+</body></html>

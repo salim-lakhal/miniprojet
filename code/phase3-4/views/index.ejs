@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html>
+<head><title>XYZ University</title>
+<style>body{font-family:Arial;margin:20px}table{border-collapse:collapse;width:100%}th,td{border:1px solid #ddd;padding:8px;text-align:left}th{background:#4CAF50;color:white}a{margin:5px;padding:5px 10px;background:#2196F3;color:white;text-decoration:none;border-radius:3px}h1{color:#333}</style>
+</head>
+<body>
+<h1>XYZ University - Student Records</h1>
+<a href="/">Home</a> <a href="/add">Add a new student</a>
+<h2>All students</h2>
+<table><tr><th>Name</th><th>Address</th><th>City</th><th>State</th><th>Email</th><th>Phone</th><th>Actions</th></tr>
+<% students.forEach(s => { %>
+<tr><td><%= s.name %></td><td><%= s.address %></td><td><%= s.city %></td><td><%= s.state %></td><td><%= s.email %></td><td><%= s.phone %></td><td><a href="/edit/<%= s.id %>">edit</a> <a href="/delete/<%= s.id %>">delete</a></td></tr>
+<% }); %>
+</table>
+</body></html>

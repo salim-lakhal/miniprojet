@@ -1,0 +1,1095 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<title>Revisions CSC 8604 - Cloud Computing - COMPLET</title>
+<style>
+  @page { size: A4; margin: 1.5cm; }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: Arial, sans-serif; font-size: 10pt; line-height: 1.45; color: #000; }
+  h1 { font-size: 18pt; text-align: center; margin: 15px 0 5px; }
+  .subtitle { text-align: center; font-size: 10pt; color: #555; margin-bottom: 20px; }
+  h2 { font-size: 13pt; background: #000; color: #fff; padding: 5px 10px; margin: 20px 0 8px; }
+  h3 { font-size: 10.5pt; margin: 12px 0 5px; border-bottom: 1px solid #999; padding-bottom: 2px; }
+  h4 { font-size: 10pt; margin: 8px 0 4px; }
+  p { margin-bottom: 5px; }
+  .box { border: 1px solid #000; padding: 6px 10px; margin: 6px 0; page-break-inside: avoid; }
+  .box-title { font-weight: 700; margin-bottom: 3px; }
+  .analogy { background: #f5f5f5; border-left: 3px solid #000; padding: 5px 8px; margin: 6px 0; font-style: italic; }
+  table { width: 100%; border-collapse: collapse; margin: 6px 0; font-size: 9.5pt; page-break-inside: avoid; }
+  th { background: #000; color: #fff; padding: 4px 6px; text-align: left; }
+  td { padding: 3px 6px; border-bottom: 1px solid #ccc; }
+  tr:nth-child(even) td { background: #f5f5f5; }
+  ul, ol { margin-left: 16px; margin-bottom: 5px; }
+  li { margin-bottom: 2px; }
+  .qcm { border: 1px solid #999; padding: 6px 10px; margin: 6px 0; page-break-inside: avoid; }
+  .qcm-q { font-weight: 700; margin-bottom: 3px; }
+  .qcm-a { color: #000; font-weight: 700; }
+  .pb { page-break-before: always; }
+  .tip { font-weight: 700; }
+  code { font-family: monospace; background: #eee; padding: 1px 3px; font-size: 9pt; }
+  .important { background: #f0f0f0; border: 2px solid #000; padding: 6px 10px; margin: 6px 0; }
+  .two-col { display: flex; gap: 10px; }
+  .two-col > div { flex: 1; }
+</style>
+</head>
+<body>
+
+<h1>Revisions CSC 8604 — Cloud Computing</h1>
+<p class="subtitle">Fiche COMPLETE et DETAILLEE — Exam 90 min sans documents — QCM + Comprehension</p>
+
+<!-- ===================================================================== -->
+<h2>1. Introduction au Cloud Computing</h2>
+
+<h3>Definition</h3>
+<p>Le cloud computing = livraison de ressources informatiques (serveurs, stockage, bases de donnees, reseau) <strong>a la demande via Internet</strong> avec une <strong>tarification a l'usage</strong> (pay-as-you-go).</p>
+
+<h3>Les 6 avantages du cloud (a connaitre par coeur)</h3>
+<table>
+  <tr><th>#</th><th>Avantage</th><th>Explication detaillee</th></tr>
+  <tr><td>1</td><td><strong>Depenses variables</strong></td><td>Au lieu d'investir dans un datacenter (CapEx), tu paies uniquement ce que tu consommes (OpEx). Pas de cout initial.</td></tr>
+  <tr><td>2</td><td><strong>Economies d'echelle</strong></td><td>AWS achete des centaines de milliers de serveurs → cout unitaire tres bas → repercute sur les clients</td></tr>
+  <tr><td>3</td><td><strong>Plus besoin de deviner la capacite</strong></td><td>On-premise : tu achetes pour le pic → gaspillage. Cloud : tu scales exactement selon la demande</td></tr>
+  <tr><td>4</td><td><strong>Vitesse et agilite</strong></td><td>Lancer un serveur en 2 min au lieu d'attendre 2 semaines pour commander du hardware</td></tr>
+  <tr><td>5</td><td><strong>Fin de la maintenance datacenter</strong></td><td>Plus besoin de gerer le refroidissement, l'alimentation, les cables, la securite physique</td></tr>
+  <tr><td>6</td><td><strong>Deploiement mondial en minutes</strong></td><td>Tu peux deployer ton app dans 30+ regions dans le monde en quelques clics</td></tr>
+</table>
+
+<h3>3 modeles de service (IaaS / PaaS / SaaS)</h3>
+<table>
+  <tr><th>Modele</th><th>Toi tu geres</th><th>AWS gere</th><th>Exemples AWS</th></tr>
+  <tr><td><strong>IaaS</strong></td><td>OS, apps, donnees, middleware</td><td>Hardware, reseau, virtualisation</td><td>EC2, VPC, EBS</td></tr>
+  <tr><td><strong>PaaS</strong></td><td>Ton code et tes donnees</td><td>OS, serveur, scaling, patching</td><td>Elastic Beanstalk, RDS</td></tr>
+  <tr><td><strong>SaaS</strong></td><td>Rien (tu utilises)</td><td>Absolument tout</td><td>Gmail, Salesforce, Dropbox</td></tr>
+</table>
+<p><span class="tip">Astuce QCM :</span> Plus tu montes vers SaaS, moins tu as de controle mais moins tu as de travail.</p>
+
+<h3>3 modeles de deploiement</h3>
+<ul>
+  <li><strong>Cloud public</strong> — Tout chez un fournisseur (AWS, Azure, GCP). Le plus courant, le plus flexible</li>
+  <li><strong>Cloud prive (on-premises)</strong> — Infrastructure dans ton propre datacenter avec des outils cloud (ex: VMware, OpenStack)</li>
+  <li><strong>Cloud hybride</strong> — Mix des deux. Ex: donnees sensibles en prive, reste dans le cloud public. AWS propose <strong>AWS Outposts</strong> pour ca</li>
+</ul>
+
+<h3>Infrastructure mondiale AWS</h3>
+<table>
+  <tr><th>Concept</th><th>Definition</th><th>Nombre approx.</th></tr>
+  <tr><td><strong>Region</strong></td><td>Zone geographique isolee (ex: us-east-1 = Virginie du Nord)</td><td>30+ regions</td></tr>
+  <tr><td><strong>Availability Zone (AZ)</strong></td><td>1 ou plusieurs datacenters dans une region, relies par reseau rapide</td><td>3-6 AZ par region</td></tr>
+  <tr><td><strong>Edge Location</strong></td><td>Point de presence pour CloudFront (CDN) et Route 53</td><td>400+</td></tr>
+</table>
+<p><span class="tip">Important :</span> Chaque <strong>region</strong> a au minimum <strong>2 AZ</strong>. Les AZ sont <strong>physiquement separees</strong> (different batiment, alimentation, reseau) mais connectees par fibre tres rapide (latence < 1ms). C'est ca qui permet le Multi-AZ.</p>
+
+<div class="qcm">
+  <div class="qcm-q">QCM : Quel est l'avantage principal du cloud par rapport a un datacenter sur site ?</div>
+  <div class="qcm-a">R : Remplacer les depenses initiales (CapEx) par des depenses variables (OpEx) a l'usage</div>
+</div>
+<div class="qcm">
+  <div class="qcm-q">QCM : Combien d'AZ minimum par region AWS ?</div>
+  <div class="qcm-a">R : 2 (et generalement 3 ou plus)</div>
+</div>
+
+<!-- ===================================================================== -->
+<div class="pb"></div>
+<h2>2. Well-Architected Framework (6 piliers)</h2>
+
+<p>Le WAF est le guide officiel AWS pour concevoir des architectures fiables, securisees et efficaces.</p>
+
+<table>
+  <tr><th>Pilier</th><th>Question cle</th><th>Principes</th><th>Services AWS</th></tr>
+  <tr><td><strong>1. Excellence operationnelle</strong></td><td>Comment executer et surveiller ?</td><td>Automatiser, petits changements, anticiper les pannes, apprendre des incidents</td><td>CloudFormation, CloudWatch, Config, Systems Manager</td></tr>
+  <tr><td><strong>2. Securite</strong></td><td>Comment proteger ?</td><td>Moindre privilege, tracabilite, securite a tous les niveaux, automatiser la securite</td><td>IAM, CloudTrail, KMS, Security Groups, WAF</td></tr>
+  <tr><td><strong>3. Fiabilite</strong></td><td>Comment recuperer des pannes ?</td><td>Tester la recuperation, scaler horizontalement, arreter de deviner la capacite</td><td>Multi-AZ, ASG, ELB, Route 53</td></tr>
+  <tr><td><strong>4. Efficacite des performances</strong></td><td>Comment utiliser les ressources efficacement ?</td><td>Utiliser les technologies avancees comme un service, deployer partout en minutes</td><td>Auto Scaling, ElastiCache, CloudFront, Lambda</td></tr>
+  <tr><td><strong>5. Optimisation des couts</strong></td><td>Comment depenser le minimum ?</td><td>Adopter un modele de consommation, mesurer l'efficacite, arreter les depenses inutiles</td><td>Cost Explorer, Budgets, Reserved Instances, Spot</td></tr>
+  <tr><td><strong>6. Durabilite</strong></td><td>Comment minimiser l'impact environnemental ?</td><td>Comprendre son impact, maximiser l'utilisation, adopter du managed</td><td>Rightsizing, Graviton, Lambda</td></tr>
+</table>
+
+<div class="qcm">
+  <div class="qcm-q">QCM : Quel pilier du WAF concerne la capacite a recuperer automatiquement d'une panne ?</div>
+  <div class="qcm-a">R : Pilier Fiabilite (Reliability)</div>
+</div>
+
+<!-- ===================================================================== -->
+<div class="pb"></div>
+<h2>3. VPC — Virtual Private Cloud (RESEAU) — EN DETAIL</h2>
+
+<h3>C'est quoi un VPC ?</h3>
+<p>Un VPC est <strong>ton propre reseau prive virtuel dans AWS</strong>. Tu as le controle total sur :</p>
+<ul>
+  <li>La plage d'adresses IP (CIDR block)</li>
+  <li>La creation de subnets</li>
+  <li>La configuration des tables de routage</li>
+  <li>Les passerelles reseau (IGW, NAT)</li>
+  <li>Les regles de securite (SG, NACL)</li>
+</ul>
+
+<div class="analogy">
+<strong>VPC</strong> = ton immeuble prive | <strong>Subnets</strong> = les etages | <strong>IGW</strong> = la porte d'entree vers la rue | <strong>NAT</strong> = fenetre pour voir dehors sans etre vu | <strong>Route Table</strong> = panneaux directionnels | <strong>SG</strong> = vigile a chaque porte | <strong>NACL</strong> = vigile a l'entree de chaque etage
+</div>
+
+<h3>CIDR Block (les adresses IP)</h3>
+<p>Quand tu crees un VPC, tu choisis une plage d'adresses IP en notation <strong>CIDR</strong>.</p>
+<table>
+  <tr><th>CIDR</th><th>Nombre d'IPs</th><th>Utilisation</th></tr>
+  <tr><td><code>10.0.0.0/16</code></td><td>65 536 IPs</td><td>VPC principal (le plus courant)</td></tr>
+  <tr><td><code>10.0.1.0/24</code></td><td>256 IPs</td><td>Subnet (256 - 5 reservees = 251 utilisables)</td></tr>
+  <tr><td><code>10.0.2.0/24</code></td><td>256 IPs</td><td>Autre subnet</td></tr>
+</table>
+<p><span class="tip">Regle :</span> Le /16 c'est le VPC (large), les /24 c'est les subnets (plus petits). Plus le nombre apres / est grand, moins il y a d'IPs.</p>
+<p><span class="tip">AWS reserve 5 IPs par subnet :</span> la premiere (reseau), la derniere (broadcast), et 3 pour AWS (DNS, routeur, futur usage).</p>
+
+<h3>Subnets en detail</h3>
+<div class="important">
+  <strong>Un subnet = un sous-reseau dans UNE seule AZ.</strong> Un subnet ne peut PAS s'etendre sur plusieurs AZ. Mais tu peux avoir plusieurs subnets dans la meme AZ.
+</div>
+
+<table>
+  <tr><th></th><th>Subnet PUBLIC</th><th>Subnet PRIVE</th></tr>
+  <tr><td><strong>Route table</strong></td><td>Route <code>0.0.0.0/0 → igw-xxx</code></td><td>Route <code>0.0.0.0/0 → nat-xxx</code> (ou aucune)</td></tr>
+  <tr><td><strong>IP publique ?</strong></td><td>Oui (auto-assign public IP active)</td><td>Non (IP privee uniquement)</td></tr>
+  <tr><td><strong>Accessible depuis Internet ?</strong></td><td>Oui (si SG le permet)</td><td>Non</td></tr>
+  <tr><td><strong>Peut sortir vers Internet ?</strong></td><td>Oui (via IGW)</td><td>Oui seulement via NAT Gateway</td></tr>
+  <tr><td><strong>On y met quoi ?</strong></td><td>ALB, Bastion Host, NAT Gateway</td><td>EC2 appli, RDS, ElastiCache</td></tr>
+</table>
+
+<h3>Internet Gateway (IGW)</h3>
+<ul>
+  <li>C'est la <strong>porte d'entree/sortie vers Internet</strong> pour ton VPC</li>
+  <li>Il y a <strong>1 IGW par VPC</strong> (pas plus)</li>
+  <li>Il est <strong>hautement disponible</strong> par defaut (AWS le gere)</li>
+  <li>Pour qu'un subnet soit public, sa route table doit avoir : <code>0.0.0.0/0 → igw-xxx</code></li>
+</ul>
+
+<h3>NAT Gateway</h3>
+<ul>
+  <li>Permet aux instances dans un <strong>subnet prive</strong> d'acceder a Internet (ex: pour telecharger des mises a jour)</li>
+  <li><strong>SANS que Internet puisse les contacter</strong> (sens unique : sortie seulement)</li>
+  <li>Se place dans un <strong>subnet public</strong> (il a besoin de l'IGW)</li>
+  <li>Coute de l'argent (~$0.045/h + cout du trafic)</li>
+  <li>Pour la haute dispo : un NAT Gateway par AZ</li>
+</ul>
+
+<div class="box">
+  <div class="box-title">Schema logique du flux reseau</div>
+  <p><code>Instance privee → Route Table (0.0.0.0/0 → NAT) → NAT Gateway (dans subnet public) → Route Table (0.0.0.0/0 → IGW) → Internet Gateway → Internet</code></p>
+</div>
+
+<h3>Route Tables (tables de routage)</h3>
+<ul>
+  <li>Chaque subnet est associe a <strong>exactement 1 route table</strong></li>
+  <li>Une route table contient des <strong>regles de routage</strong> (destination → cible)</li>
+  <li>Route table publique : <code>10.0.0.0/16 → local</code> + <code>0.0.0.0/0 → igw-xxx</code></li>
+  <li>Route table privee : <code>10.0.0.0/16 → local</code> + <code>0.0.0.0/0 → nat-xxx</code></li>
+  <li>La route <code>local</code> permet la communication entre tous les subnets du VPC</li>
+</ul>
+
+<h3>Elastic IP (EIP)</h3>
+<ul>
+  <li>Adresse IP publique <strong>statique</strong> (ne change pas au reboot)</li>
+  <li>Tu peux l'attacher a une EC2 ou un NAT Gateway</li>
+  <li><strong>Gratuite quand elle est utilisee</strong>, payante si elle ne l'est pas (AWS ne veut pas de gaspillage d'IPs)</li>
+</ul>
+
+<h3>Security Groups (SG) — EN DETAIL</h3>
+<div class="important">
+  <strong>Security Group = firewall VIRTUEL au niveau de l'instance.</strong> Chaque instance EC2 a au moins 1 SG.
+</div>
+
+<table>
+  <tr><th>Propriete</th><th>Detail</th></tr>
+  <tr><td><strong>Niveau</strong></td><td>Instance (ENI = Elastic Network Interface)</td></tr>
+  <tr><td><strong>Stateful</strong></td><td>Si tu autorises le trafic ENTRANT, la reponse sort automatiquement (pas besoin de regle sortante)</td></tr>
+  <tr><td><strong>Regles</strong></td><td>Uniquement des regles <strong>ALLOW</strong> (pas de DENY possible)</td></tr>
+  <tr><td><strong>Par defaut</strong></td><td>Tout le trafic ENTRANT est <strong>bloque</strong>. Tout le trafic SORTANT est <strong>autorise</strong></td></tr>
+  <tr><td><strong>Evaluation</strong></td><td>Toutes les regles sont evaluees (pas d'ordre de priorite)</td></tr>
+  <tr><td><strong>Reference croisee</strong></td><td>Tu peux autoriser un autre SG comme source (ex: SG du web → SG de la BDD)</td></tr>
+</table>
+
+<h4>Exemples de regles SG typiques</h4>
+<table>
+  <tr><th>SG pour</th><th>Type</th><th>Protocol</th><th>Port</th><th>Source</th></tr>
+  <tr><td>Serveur Web</td><td>Inbound</td><td>TCP</td><td>80 (HTTP)</td><td>0.0.0.0/0 (tout le monde)</td></tr>
+  <tr><td>Serveur Web</td><td>Inbound</td><td>TCP</td><td>443 (HTTPS)</td><td>0.0.0.0/0</td></tr>
+  <tr><td>Serveur Web</td><td>Inbound</td><td>TCP</td><td>22 (SSH)</td><td>Mon IP uniquement</td></tr>
+  <tr><td>Base de donnees</td><td>Inbound</td><td>TCP</td><td>3306 (MySQL)</td><td><strong>sg-web</strong> (le SG du serveur web)</td></tr>
+</table>
+<p><span class="tip">Bonne pratique :</span> La BDD n'accepte les connexions QUE depuis le SG du serveur web (pas depuis 0.0.0.0/0 !). C'est le <strong>chainage de SG</strong>.</p>
+
+<h3>NACL (Network ACL) — EN DETAIL</h3>
+<table>
+  <tr><th>Propriete</th><th>Detail</th></tr>
+  <tr><td><strong>Niveau</strong></td><td>Subnet (s'applique a tout le trafic entrant/sortant du subnet)</td></tr>
+  <tr><td><strong>Stateless</strong></td><td>Tu dois creer des regles pour le trafic ENTRANT <strong>ET</strong> SORTANT separement</td></tr>
+  <tr><td><strong>Regles</strong></td><td>ALLOW <strong>et DENY</strong> possibles</td></tr>
+  <tr><td><strong>Par defaut</strong></td><td>La NACL par defaut <strong>autorise tout</strong>. Les NACL custom <strong>bloquent tout</strong></td></tr>
+  <tr><td><strong>Evaluation</strong></td><td>Les regles sont evaluees <strong>dans l'ordre des numeros</strong> (de la plus petite a la plus grande). La premiere qui matche gagne</td></tr>
+  <tr><td><strong>Numerotation</strong></td><td>Regles numerotees (ex: 100, 200...). Convention : incrementer par 100 pour pouvoir inserer</td></tr>
+</table>
+
+<h3>SG vs NACL — Tableau comparatif COMPLET</h3>
+<table>
+  <tr><th>Critere</th><th>Security Group</th><th>NACL</th></tr>
+  <tr><td>Niveau</td><td>Instance (ENI)</td><td>Subnet</td></tr>
+  <tr><td>Stateful / Stateless</td><td><strong>Stateful</strong></td><td><strong>Stateless</strong></td></tr>
+  <tr><td>Regles</td><td>ALLOW uniquement</td><td>ALLOW + DENY</td></tr>
+  <tr><td>Evaluation</td><td>Toutes les regles</td><td>Dans l'ordre des numeros</td></tr>
+  <tr><td>Par defaut (entrant)</td><td>Tout bloque</td><td>Tout autorise (defaut) / tout bloque (custom)</td></tr>
+  <tr><td>Par defaut (sortant)</td><td>Tout autorise</td><td>Tout autorise (defaut)</td></tr>
+  <tr><td>S'applique a</td><td>Seulement si associe a l'instance</td><td>Automatiquement a tout le subnet</td></tr>
+</table>
+
+<h3>VPC Peering</h3>
+<ul>
+  <li>Connexion reseau <strong>directe entre 2 VPC</strong> (meme compte ou differents, meme region ou differentes)</li>
+  <li><strong>Non transitif</strong> : si VPC A ↔ VPC B et VPC B ↔ VPC C, alors A ne peut PAS parler a C (il faut un peering A ↔ C)</li>
+  <li>Les CIDR des 2 VPC ne doivent <strong>pas se chevaucher</strong></li>
+</ul>
+
+<div class="qcm">
+  <div class="qcm-q">QCM : Un serveur dans un subnet prive doit telecharger des mises a jour depuis Internet. Quel composant est necessaire ?</div>
+  <div class="qcm-a">R : NAT Gateway (place dans un subnet public)</div>
+</div>
+<div class="qcm">
+  <div class="qcm-q">QCM : Tu veux que ta BDD MySQL n'accepte des connexions que depuis ton serveur web EC2. Comment configurer le SG de la BDD ?</div>
+  <div class="qcm-a">R : Inbound rule : TCP port 3306, source = le Security Group du serveur web (sg-xxx)</div>
+</div>
+<div class="qcm">
+  <div class="qcm-q">QCM : Quelle est la difference fondamentale entre Stateful et Stateless ?</div>
+  <div class="qcm-a">R : Stateful (SG) = la reponse est automatiquement autorisee. Stateless (NACL) = tu dois autoriser entree ET sortie explicitement</div>
+</div>
+<div class="qcm">
+  <div class="qcm-q">QCM : Un VPC A est peere avec B, et B est peere avec C. A peut-il communiquer avec C ?</div>
+  <div class="qcm-a">R : Non. Le VPC peering est non transitif. Il faut un peering direct A ↔ C</div>
+</div>
+
+<!-- ===================================================================== -->
+<div class="pb"></div>
+<h2>4. EC2 — Elastic Compute Cloud — EN DETAIL</h2>
+
+<h3>C'est quoi ?</h3>
+<p>EC2 = <strong>machine virtuelle (serveur) que tu loues a la demande</strong>. Tu choisis l'OS, la taille, le stockage, et le reseau.</p>
+
+<h3>Les composants cles d'une instance EC2</h3>
+<table>
+  <tr><th>Composant</th><th>Explication detaillee</th></tr>
+  <tr><td><strong>AMI</strong> (Amazon Machine Image)</td><td>Image/photo d'un serveur (OS + logiciels pre-installes). Tu peux utiliser une AMI AWS, du Marketplace, ou <strong>creer la tienne</strong> a partir d'une instance existante. Utile pour dupliquer un serveur configure</td></tr>
+  <tr><td><strong>Instance Type</strong></td><td>La "taille" du serveur : nombre de vCPU, RAM, stockage, reseau. Format : <code>famille.taille</code> (ex: t3.micro)</td></tr>
+  <tr><td><strong>Key Pair</strong></td><td>Paire de cles SSH (publique/privee) pour se connecter a l'instance Linux. La cle privee = ton mot de passe</td></tr>
+  <tr><td><strong>Security Group</strong></td><td>Firewall virtuel (voir section VPC). Tu peux en attacher plusieurs a une meme instance</td></tr>
+  <tr><td><strong>User Data</strong></td><td>Script bash qui s'execute <strong>une seule fois au premier demarrage</strong>. Sert a installer des paquets, configurer le serveur, telecharger du code</td></tr>
+  <tr><td><strong>IAM Role</strong></td><td>Permissions AWS attachees a l'instance. Ex: droit de lire un secret dans Secrets Manager. <strong>TOUJOURS utiliser un role, JAMAIS mettre des cles dans le code</strong></td></tr>
+  <tr><td><strong>EBS Volume</strong></td><td>Le disque dur de l'instance (voir section stockage)</td></tr>
+  <tr><td><strong>Elastic IP</strong></td><td>IP publique fixe (ne change pas quand tu redemarres l'instance)</td></tr>
+</table>
+
+<h3>Familles d'instances (a connaitre)</h3>
+<table>
+  <tr><th>Famille</th><th>Lettre</th><th>Optimise pour</th><th>Cas d'usage</th></tr>
+  <tr><td><strong>General Purpose</strong></td><td>T, M</td><td>Equilibre CPU/RAM</td><td>Sites web, apps, petites BDD</td></tr>
+  <tr><td><strong>Compute Optimized</strong></td><td>C</td><td>CPU puissant</td><td>Calcul scientifique, encoding video, gaming</td></tr>
+  <tr><td><strong>Memory Optimized</strong></td><td>R, X</td><td>Beaucoup de RAM</td><td>Grosses BDD en memoire, caches</td></tr>
+  <tr><td><strong>Storage Optimized</strong></td><td>I, D, H</td><td>I/O disque rapide</td><td>Data warehousing, fichiers distribues</td></tr>
+  <tr><td><strong>Accelerated</strong></td><td>P, G, Inf</td><td>GPU / TPU</td><td>Machine learning, rendu graphique</td></tr>
+</table>
+<p><span class="tip">T3.micro</span> fait partie du <strong>Free Tier</strong> (750h/mois pendant 12 mois). C'est une instance "burstable" (elle accumule des credits CPU quand elle est idle).</p>
+
+<h3>Modes d'achat — EN DETAIL</h3>
+<table>
+  <tr><th>Mode</th><th>Engagement</th><th>Reduction</th><th>Interruption ?</th><th>Quand l'utiliser</th></tr>
+  <tr><td><strong>On-Demand</strong></td><td>Aucun</td><td>0%</td><td>Non</td><td>Dev/test, charge imprevisible, court terme</td></tr>
+  <tr><td><strong>Reserved (RI)</strong></td><td>1 an ou 3 ans</td><td>Jusqu'a -72%</td><td>Non</td><td>Production stable 24/7 (serveur de BDD, appli critique)</td></tr>
+  <tr><td><strong>Savings Plans</strong></td><td>1 an ou 3 ans</td><td>Jusqu'a -72%</td><td>Non</td><td>Comme RI mais plus flexible (pas lie a un type d'instance)</td></tr>
+  <tr><td><strong>Spot Instances</strong></td><td>Aucun</td><td>Jusqu'a -90%</td><td><strong>OUI</strong> (2 min de preavis)</td><td>Batch processing, big data, CI/CD, calcul non critique</td></tr>
+  <tr><td><strong>Dedicated Hosts</strong></td><td>Variable</td><td>Variable</td><td>Non</td><td>Compliance, licences logicielles liees au hardware (Oracle, SQL Server)</td></tr>
+  <tr><td><strong>Dedicated Instances</strong></td><td>Variable</td><td>Variable</td><td>Non</td><td>Isolation physique mais pas de controle du placement</td></tr>
+</table>
+
+<h3>User Data — Script de demarrage</h3>
+<p>Le User Data s'execute en tant que <strong>root</strong> au <strong>premier lancement uniquement</strong>. Exemple typique :</p>
+<div class="box">
+<code>#!/bin/bash<br>
+yum update -y<br>
+yum install -y httpd<br>
+systemctl start httpd<br>
+systemctl enable httpd<br>
+echo "Hello World" > /var/www/html/index.html</code>
+</div>
+
+<h3>Metadata de l'instance</h3>
+<p>Chaque instance EC2 peut acceder a ses propres infos via : <code>http://169.254.169.254/latest/meta-data/</code></p>
+<p>Exemples : IP publique, IP privee, IAM role, instance-id, AZ, etc.</p>
+
+<h3>Placement Groups</h3>
+<table>
+  <tr><th>Type</th><th>Comportement</th><th>Cas d'usage</th></tr>
+  <tr><td><strong>Cluster</strong></td><td>Toutes les instances dans le meme rack</td><td>HPC, faible latence</td></tr>
+  <tr><td><strong>Spread</strong></td><td>Chaque instance sur un hardware different</td><td>Haute dispo critique (max 7 par AZ)</td></tr>
+  <tr><td><strong>Partition</strong></td><td>Groupes sur des racks differents</td><td>Big data (Hadoop, Kafka)</td></tr>
+</table>
+
+<div class="qcm">
+  <div class="qcm-q">QCM : Un client veut reduire ses couts EC2 de 60% pour une charge previsible qui tourne 24/7. Que recommander ?</div>
+  <div class="qcm-a">R : Reserved Instances ou Savings Plans (engagement 1-3 ans = grosse reduction)</div>
+</div>
+<div class="qcm">
+  <div class="qcm-q">QCM : Un script doit s'executer automatiquement au premier demarrage d'une EC2. Quelle fonctionnalite utiliser ?</div>
+  <div class="qcm-a">R : EC2 User Data</div>
+</div>
+<div class="qcm">
+  <div class="qcm-q">QCM : Quel type d'instance pour une application de machine learning qui a besoin de GPU ?</div>
+  <div class="qcm-a">R : Accelerated Computing (famille P ou G)</div>
+</div>
+<div class="qcm">
+  <div class="qcm-q">QCM : Comment donner a une EC2 la permission de lire un secret dans Secrets Manager ?</div>
+  <div class="qcm-a">R : Attacher un IAM Role a l'instance avec la policy permettant secretsmanager:GetSecretValue</div>
+</div>
+
+<!-- ===================================================================== -->
+<div class="pb"></div>
+<h2>5. Stockage — S3, EBS, EFS — EN DETAIL</h2>
+
+<h3>Amazon S3 (Simple Storage Service)</h3>
+<p>S3 = <strong>stockage objet illimite</strong>. Tu mets des fichiers (objets) dans des buckets.</p>
+
+<h4>Concepts cles S3</h4>
+<table>
+  <tr><th>Concept</th><th>Detail</th></tr>
+  <tr><td><strong>Bucket</strong></td><td>Conteneur de niveau superieur. Nom <strong>unique au monde</strong>. Cree dans une region specifique</td></tr>
+  <tr><td><strong>Objet</strong></td><td>Un fichier + metadonnees. Taille max : <strong>5 To</strong> par objet</td></tr>
+  <tr><td><strong>Cle (Key)</strong></td><td>Le chemin complet de l'objet dans le bucket (ex: images/photo.jpg)</td></tr>
+  <tr><td><strong>Durabilite</strong></td><td><strong>99.999999999%</strong> (11 neufs). Tes fichiers ne seront JAMAIS perdus</td></tr>
+  <tr><td><strong>Disponibilite</strong></td><td>99.99% pour S3 Standard (= ~53 min d'indisponibilite/an max)</td></tr>
+  <tr><td><strong>Versioning</strong></td><td>Garder toutes les versions d'un objet. Protection contre la suppression accidentelle</td></tr>
+  <tr><td><strong>Encryption</strong></td><td>Chiffrement au repos par defaut (SSE-S3). Options : SSE-KMS, SSE-C</td></tr>
+</table>
+
+<h4>Classes de stockage S3 (du plus cher au moins cher)</h4>
+<table>
+  <tr><th>Classe</th><th>Acces</th><th>Cout stockage</th><th>Cout recuperation</th><th>Cas d'usage</th></tr>
+  <tr><td><strong>S3 Standard</strong></td><td>Frequent</td><td>$$$</td><td>Gratuit</td><td>Site web, images, donnees actives</td></tr>
+  <tr><td><strong>S3 Intelligent-Tiering</strong></td><td>Variable</td><td>$$</td><td>Gratuit</td><td>Acces imprevisible (AWS deplace auto)</td></tr>
+  <tr><td><strong>S3 Standard-IA</strong></td><td>Peu frequent</td><td>$$</td><td>Payant</td><td>Backups, donnees qu'on garde "au cas ou"</td></tr>
+  <tr><td><strong>S3 One Zone-IA</strong></td><td>Peu frequent</td><td>$</td><td>Payant</td><td>Donnees re-creables (1 seule AZ = moins resilient)</td></tr>
+  <tr><td><strong>S3 Glacier Instant</strong></td><td>Rare</td><td>$</td><td>Payant</td><td>Archive avec acces en millisecondes</td></tr>
+  <tr><td><strong>S3 Glacier Flexible</strong></td><td>Tres rare</td><td>¢</td><td>Minutes a heures</td><td>Archives longue duree</td></tr>
+  <tr><td><strong>S3 Glacier Deep Archive</strong></td><td>Quasi jamais</td><td>¢¢</td><td><strong>12 heures</strong></td><td>Compliance, archivage legal 7+ ans</td></tr>
+</table>
+
+<h4>S3 Lifecycle Rules</h4>
+<p>Tu peux automatiquement deplacer les objets entre classes au fil du temps :</p>
+<p><code>Standard → (apres 30j) → Standard-IA → (apres 90j) → Glacier → (apres 365j) → Deep Archive</code></p>
+
+<h4>S3 Static Website Hosting</h4>
+<ul>
+  <li>S3 peut heberger un <strong>site web statique</strong> (HTML, CSS, JS) sans serveur</li>
+  <li>URL format : <code>http://bucket-name.s3-website-region.amazonaws.com</code></li>
+  <li>Il faut activer le static website hosting ET rendre les objets publics (bucket policy)</li>
+</ul>
+
+<h4>S3 Bucket Policy vs ACL</h4>
+<ul>
+  <li><strong>Bucket Policy</strong> = JSON qui definit qui peut acceder au bucket et comment. S'applique au bucket entier</li>
+  <li><strong>ACL</strong> = permissions plus simples et plus anciennes. AWS recommande de les desactiver</li>
+  <li><strong>Block Public Access</strong> = parametres au niveau du compte/bucket pour empecher tout acces public accidentel</li>
+</ul>
+
+<h3>Amazon EBS (Elastic Block Store)</h3>
+<p>EBS = <strong>disque dur virtuel</strong> attache a une instance EC2. C'est le stockage principal de l'instance.</p>
+
+<table>
+  <tr><th>Propriete</th><th>Detail</th></tr>
+  <tr><td><strong>Attache a</strong></td><td><strong>1 seule instance EC2</strong> dans la <strong>meme AZ</strong></td></tr>
+  <tr><td><strong>Persistence</strong></td><td>Les donnees persistent meme si l'instance est arretee (mais pas terminee par defaut pour le root)</td></tr>
+  <tr><td><strong>Snapshots</strong></td><td>Backup du volume EBS, stocke dans S3. Peut etre copie dans une autre region</td></tr>
+  <tr><td><strong>Types</strong></td><td>gp3 (usage general SSD), io2 (hautes performances), st1 (HDD throughput), sc1 (cold HDD)</td></tr>
+  <tr><td><strong>Chiffrement</strong></td><td>AES-256, gere par AWS KMS. Transparent pour l'utilisateur</td></tr>
+</table>
+
+<h4>Types de volumes EBS</h4>
+<table>
+  <tr><th>Type</th><th>Techno</th><th>Cas d'usage</th><th>Performance</th></tr>
+  <tr><td><strong>gp3 / gp2</strong></td><td>SSD</td><td>Boot volume, dev, apps generales</td><td>Jusqu'a 16 000 IOPS</td></tr>
+  <tr><td><strong>io2 / io1</strong></td><td>SSD</td><td>BDD haute performance (Oracle, SQL Server)</td><td>Jusqu'a 64 000 IOPS</td></tr>
+  <tr><td><strong>st1</strong></td><td>HDD</td><td>Big data, logs, streaming</td><td>Throughput optimise</td></tr>
+  <tr><td><strong>sc1</strong></td><td>HDD</td><td>Donnees froides, archivage</td><td>Le moins cher</td></tr>
+</table>
+
+<h3>Amazon EFS (Elastic File System)</h3>
+<ul>
+  <li>Systeme de fichiers <strong>partage</strong> accessible par <strong>plusieurs instances EC2 en meme temps</strong></li>
+  <li>Protocole <strong>NFS</strong> (Linux uniquement)</li>
+  <li><strong>Scalabilite automatique</strong> (grandit/diminue selon tes fichiers)</li>
+  <li>Fonctionne <strong>a travers les AZ</strong> d'une region</li>
+  <li>Cas d'usage : partage de fichiers, CMS, home directories</li>
+</ul>
+
+<h3>Comparaison S3 vs EBS vs EFS</h3>
+<table>
+  <tr><th></th><th>S3</th><th>EBS</th><th>EFS</th></tr>
+  <tr><td><strong>Type</strong></td><td>Stockage objet</td><td>Block storage (disque dur)</td><td>File system (NFS)</td></tr>
+  <tr><td><strong>Acces</strong></td><td>Via HTTP/API</td><td>Monte sur 1 EC2</td><td>Monte sur N EC2</td></tr>
+  <tr><td><strong>AZ</strong></td><td>Multi-AZ auto</td><td>1 seule AZ</td><td>Multi-AZ</td></tr>
+  <tr><td><strong>Taille max</strong></td><td>Illimitee</td><td>16 To par volume</td><td>Illimitee</td></tr>
+  <tr><td><strong>Cas</strong></td><td>Fichiers, backups, site statique</td><td>OS, BDD, boot volume</td><td>Fichiers partages entre serveurs</td></tr>
+</table>
+
+<div class="qcm">
+  <div class="qcm-q">QCM : Quel stockage pour partager des fichiers entre 10 instances EC2 reparties dans 3 AZ ?</div>
+  <div class="qcm-a">R : Amazon EFS (seul capable d'etre monte sur plusieurs instances dans plusieurs AZ)</div>
+</div>
+<div class="qcm">
+  <div class="qcm-q">QCM : Comment reduire le cout de stockage pour des fichiers consultes rarement ?</div>
+  <div class="qcm-a">R : Utiliser S3 Lifecycle Rules pour deplacer vers S3 Glacier ou Deep Archive</div>
+</div>
+
+<!-- ===================================================================== -->
+<div class="pb"></div>
+<h2>6. RDS — Bases de donnees — EN DETAIL</h2>
+
+<h3>Amazon RDS (Relational Database Service)</h3>
+<p>RDS = <strong>base de donnees relationnelle geree par AWS</strong>. AWS gere : patching, backups, haute dispo, monitoring.</p>
+
+<h4>Moteurs supportes</h4>
+<p>MySQL, PostgreSQL, MariaDB, Oracle, SQL Server, <strong>Amazon Aurora</strong></p>
+
+<h4>Avantages de RDS vs BDD sur EC2</h4>
+<table>
+  <tr><th>Fonctionnalite</th><th>MySQL sur EC2</th><th>Amazon RDS</th></tr>
+  <tr><td>Installation</td><td>Manuelle</td><td>Quelques clics</td></tr>
+  <tr><td>Patching OS</td><td>Toi</td><td>AWS</td></tr>
+  <tr><td>Backups</td><td>A configurer</td><td>Automatiques (retention 1-35 jours)</td></tr>
+  <tr><td>Haute dispo</td><td>A configurer</td><td>Multi-AZ en 1 clic</td></tr>
+  <tr><td>Scaling</td><td>Migration manuelle</td><td>Vertical scaling + Read Replicas</td></tr>
+  <tr><td>Monitoring</td><td>A installer</td><td>CloudWatch integre</td></tr>
+  <tr><td>Acces SSH</td><td>Oui</td><td><strong>Non</strong> (service manage)</td></tr>
+</table>
+
+<h3>Multi-AZ vs Read Replicas (QUESTION EXAM FREQUENTE)</h3>
+
+<div class="important">
+<table>
+  <tr><th></th><th>Multi-AZ</th><th>Read Replica</th></tr>
+  <tr><td><strong>Objectif</strong></td><td><strong>HAUTE DISPONIBILITE</strong></td><td><strong>PERFORMANCE EN LECTURE</strong></td></tr>
+  <tr><td>Comment</td><td>Copie synchrone dans une autre AZ</td><td>Copie asynchrone (peut etre dans une autre region)</td></tr>
+  <tr><td>Failover</td><td>Automatique (DNS bascule)</td><td>Pas de failover automatique</td></tr>
+  <tr><td>Lecture directe ?</td><td><strong>NON</strong> (standby invisible)</td><td><strong>OUI</strong> (endpoint de lecture dedie)</td></tr>
+  <tr><td>Nombre max</td><td>1 standby</td><td>Jusqu'a 5 replicas</td></tr>
+  <tr><td>Cout</td><td>Double (2 instances)</td><td>Cout par replica supplementaire</td></tr>
+</table>
+</div>
+
+<h3>Amazon Aurora</h3>
+<ul>
+  <li>Version AWS de MySQL/PostgreSQL, <strong>5x plus rapide que MySQL, 3x que PostgreSQL</strong></li>
+  <li>Stockage auto-scale de 10 Go a 128 To</li>
+  <li><strong>6 copies des donnees sur 3 AZ</strong> automatiquement</li>
+  <li>Jusqu'a 15 Read Replicas (vs 5 pour RDS classique)</li>
+  <li><strong>Aurora Serverless</strong> : scaling automatique, paie a l'usage</li>
+</ul>
+
+<h3>Amazon DynamoDB</h3>
+<ul>
+  <li>BDD <strong>NoSQL</strong> (cle-valeur et document) geree par AWS</li>
+  <li><strong>Serverless</strong> (pas de serveur a gerer), scaling automatique</li>
+  <li>Latence en <strong>millisecondes</strong> a n'importe quelle echelle</li>
+  <li>Modele : Table → Items (lignes) → Attributes (colonnes)</li>
+  <li>Cle primaire obligatoire : <strong>Partition Key</strong> (+ optionnel : Sort Key)</li>
+  <li>Capacite : On-Demand (auto) ou Provisioned (tu fixes les Read/Write Units)</li>
+  <li><strong>DAX</strong> = cache en memoire pour DynamoDB (latence microseconde)</li>
+</ul>
+
+<div class="qcm">
+  <div class="qcm-q">QCM : Comment rendre une BDD RDS hautement disponible en cas de panne d'une AZ ?</div>
+  <div class="qcm-a">R : Activer Multi-AZ deployment (failover automatique vers le standby)</div>
+</div>
+<div class="qcm">
+  <div class="qcm-q">QCM : L'application fait beaucoup de lectures. Comment reduire la charge sur la BDD principale ?</div>
+  <div class="qcm-a">R : Creer des Read Replicas et diriger les lectures vers elles</div>
+</div>
+<div class="qcm">
+  <div class="qcm-q">QCM : Quel service de BDD pour des donnees cle-valeur avec une latence < 10ms et un scaling automatique ?</div>
+  <div class="qcm-a">R : Amazon DynamoDB</div>
+</div>
+
+<!-- ===================================================================== -->
+<div class="pb"></div>
+<h2>7. IAM — Identity and Access Management — EN DETAIL</h2>
+
+<h3>Les 4 composants</h3>
+<table>
+  <tr><th>Composant</th><th>Definition</th><th>Detail</th></tr>
+  <tr><td><strong>User</strong></td><td>Une personne ou application</td><td>A des credentials (password pour console, access key pour CLI/API). <strong>1 user = 1 personne</strong></td></tr>
+  <tr><td><strong>Group</strong></td><td>Collection d'utilisateurs</td><td>Les policies attachees au groupe s'appliquent a tous ses membres. Ex: groupe "Developers"</td></tr>
+  <tr><td><strong>Role</strong></td><td>Identite temporaire</td><td>Pour les <strong>services AWS</strong> (EC2, Lambda) ou les utilisateurs federes. Pas de credentials permanentes</td></tr>
+  <tr><td><strong>Policy</strong></td><td>Document JSON de permissions</td><td>Definit Effect (Allow/Deny) + Action (s3:GetObject) + Resource (arn:aws:s3:::mon-bucket/*)</td></tr>
+</table>
+
+<h3>Structure d'une policy IAM</h3>
+<div class="box">
+<code>{<br>
+&nbsp;&nbsp;"Version": "2012-10-17",<br>
+&nbsp;&nbsp;"Statement": [{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;"Effect": "Allow",<br>
+&nbsp;&nbsp;&nbsp;&nbsp;"Action": "s3:GetObject",<br>
+&nbsp;&nbsp;&nbsp;&nbsp;"Resource": "arn:aws:s3:::mon-bucket/*"<br>
+&nbsp;&nbsp;}]<br>
+}</code>
+</div>
+<p>Cette policy autorise la lecture de tous les objets dans "mon-bucket".</p>
+
+<h3>Types de policies</h3>
+<table>
+  <tr><th>Type</th><th>Gere par</th><th>Exemple</th></tr>
+  <tr><td><strong>AWS Managed</strong></td><td>AWS (precreee)</td><td>AmazonS3ReadOnlyAccess</td></tr>
+  <tr><td><strong>Customer Managed</strong></td><td>Toi</td><td>Policy custom pour ton application</td></tr>
+  <tr><td><strong>Inline</strong></td><td>Toi, attachee a 1 seul user/group/role</td><td>Permission tres specifique pour 1 ressource</td></tr>
+</table>
+
+<h3>Principes de securite IAM</h3>
+<div class="box">
+<ol>
+  <li><strong>Principe du moindre privilege</strong> — Donner uniquement les permissions strictement necessaires</li>
+  <li><strong>Ne JAMAIS utiliser le compte root</strong> pour les taches quotidiennes — Creer un IAM admin a la place</li>
+  <li><strong>Activer MFA</strong> (Multi-Factor Authentication) sur root et les comptes sensibles</li>
+  <li><strong>Utiliser des Roles pour les services</strong> — EC2 qui accede a S3 → IAM Role, pas des access keys dans le code</li>
+  <li><strong>Rotation des cles</strong> — Changer regulierement les access keys</li>
+  <li><strong>Audit avec CloudTrail</strong> — Chaque appel API est logue</li>
+</ol>
+</div>
+
+<h3>Role vs User — Quand utiliser quoi ?</h3>
+<table>
+  <tr><th>Situation</th><th>Utiliser</th><th>Pourquoi</th></tr>
+  <tr><td>Personne qui se connecte a la console</td><td>IAM User</td><td>Credentials permanentes (password + MFA)</td></tr>
+  <tr><td>EC2 qui doit acceder a S3</td><td>IAM Role</td><td>Credentials temporaires, pas de cles dans le code</td></tr>
+  <tr><td>Lambda qui ecrit dans DynamoDB</td><td>IAM Role</td><td>Service AWS → toujours un role</td></tr>
+  <tr><td>Application externe qui accede a AWS</td><td>IAM Role + STS</td><td>Federation, credentials temporaires</td></tr>
+</table>
+
+<h3>Modele de responsabilite partagee</h3>
+<div class="important">
+<strong>AWS est responsable de la securite DU cloud :</strong>
+<ul>
+  <li>Hardware physique, datacenters, reseau global</li>
+  <li>Virtualisation, hyperviseur</li>
+  <li>Regions, AZ, Edge Locations</li>
+</ul>
+<strong>TOI tu es responsable de la securite DANS le cloud :</strong>
+<ul>
+  <li>Configuration des SG, NACL</li>
+  <li>Gestion IAM (users, roles, policies)</li>
+  <li>Chiffrement des donnees</li>
+  <li>Patching de l'OS (si EC2 = IaaS)</li>
+  <li>Configuration du firewall (SG, NACL)</li>
+  <li>Formation des utilisateurs</li>
+</ul>
+</div>
+
+<div class="qcm">
+  <div class="qcm-q">QCM : Une instance EC2 a besoin de lire des objets dans un bucket S3. Quelle est la methode la plus securisee ?</div>
+  <div class="qcm-a">R : Creer un IAM Role avec la policy s3:GetObject et l'attacher a l'instance EC2</div>
+</div>
+<div class="qcm">
+  <div class="qcm-q">QCM : Un developpeur a accidentellement rendu public un bucket S3. Qui est responsable ?</div>
+  <div class="qcm-a">R : Le client (toi). La configuration des ressources est ta responsabilite (modele de responsabilite partagee)</div>
+</div>
+<div class="qcm">
+  <div class="qcm-q">QCM : Quel outil AWS permet de tracer chaque appel API effectue sur le compte ?</div>
+  <div class="qcm-a">R : AWS CloudTrail</div>
+</div>
+
+<!-- ===================================================================== -->
+<div class="pb"></div>
+<h2>8. Load Balancing + Auto Scaling — EN DETAIL</h2>
+
+<h3>Elastic Load Balancer (ELB)</h3>
+<p>Un load balancer <strong>repartit le trafic entre plusieurs instances</strong> pour eviter la surcharge d'un seul serveur.</p>
+
+<h4>Types de Load Balancer</h4>
+<table>
+  <tr><th>Type</th><th>Couche OSI</th><th>Protocoles</th><th>Fonctionnalites</th><th>Cas d'usage</th></tr>
+  <tr><td><strong>ALB</strong></td><td>Couche 7</td><td>HTTP, HTTPS, WebSocket</td><td>Routage par URL, host, header. Target groups</td><td>Sites web, API REST, microservices</td></tr>
+  <tr><td><strong>NLB</strong></td><td>Couche 4</td><td>TCP, UDP, TLS</td><td>Ultra-rapide (millions req/s), IP statique</td><td>Gaming, IoT, performance extreme</td></tr>
+  <tr><td><strong>GLB</strong></td><td>Couche 3</td><td>IP</td><td>Routage vers appliances virtuelles</td><td>Firewalls, IDS/IPS</td></tr>
+</table>
+
+<h4>Concepts ALB</h4>
+<ul>
+  <li><strong>Listener</strong> : regle qui ecoute sur un port (ex: port 80 → redirect vers HTTPS, port 443 → forward vers target group)</li>
+  <li><strong>Target Group</strong> : groupe d'instances qui recevront le trafic. Avec <strong>health checks</strong></li>
+  <li><strong>Health Check</strong> : l'ALB ping regulierement chaque instance (ex: GET /health). Si elle ne repond pas, l'ALB arrete de lui envoyer du trafic</li>
+  <li><strong>Cross-zone load balancing</strong> : repartit le trafic uniformement entre toutes les AZ</li>
+  <li><strong>Sticky Sessions</strong> : un utilisateur est toujours envoye sur la meme instance (cookie)</li>
+</ul>
+
+<h3>Auto Scaling Group (ASG)</h3>
+<p>L'ASG <strong>ajoute ou retire automatiquement des instances EC2</strong> selon la demande.</p>
+
+<h4>Composants d'un ASG</h4>
+<table>
+  <tr><th>Composant</th><th>Role</th></tr>
+  <tr><td><strong>Launch Template</strong></td><td>Modele d'instance (AMI, type, SG, user data, IAM role). Remplace le Launch Configuration</td></tr>
+  <tr><td><strong>Capacite min</strong></td><td>Nombre minimum d'instances (jamais en dessous)</td></tr>
+  <tr><td><strong>Capacite max</strong></td><td>Nombre maximum d'instances (ne depassera jamais)</td></tr>
+  <tr><td><strong>Desired capacity</strong></td><td>Nombre d'instances souhaite a l'instant T</td></tr>
+  <tr><td><strong>Scaling Policy</strong></td><td>Regle qui declenche le scaling</td></tr>
+</table>
+
+<h4>Types de Scaling Policies</h4>
+<table>
+  <tr><th>Type</th><th>Comment ca marche</th><th>Exemple</th></tr>
+  <tr><td><strong>Target Tracking</strong></td><td>Maintenir une metrique a une valeur cible</td><td>"Garder le CPU moyen a 50%"</td></tr>
+  <tr><td><strong>Step Scaling</strong></td><td>Ajouter/retirer X instances selon des seuils</td><td>"CPU > 70% → +2 instances, CPU > 90% → +4"</td></tr>
+  <tr><td><strong>Simple Scaling</strong></td><td>Ajouter/retirer X instances sur un seuil unique</td><td>"CPU > 80% → +1 instance"</td></tr>
+  <tr><td><strong>Scheduled</strong></td><td>Planifie a l'avance</td><td>"Tous les lundis a 8h → 10 instances"</td></tr>
+  <tr><td><strong>Predictive</strong></td><td>ML analyse les patterns passes</td><td>Anticipe les pics de trafic</td></tr>
+</table>
+
+<h4>ALB + ASG ensemble</h4>
+<div class="box">
+<code>Utilisateurs → ALB → Target Group → ASG (min=2, max=10, desired=2)</code><br>
+Quand le trafic augmente : ASG lance de nouvelles instances → les enregistre dans le target group → ALB repartit le trafic dessus. Quand le trafic baisse : ASG termine les instances superflues.
+</div>
+
+<h3>Scalabilite verticale vs horizontale</h3>
+<table>
+  <tr><th></th><th>Verticale (Scale Up)</th><th>Horizontale (Scale Out)</th></tr>
+  <tr><td>Quoi</td><td>Plus gros serveur (plus de CPU/RAM)</td><td>Plus de serveurs</td></tr>
+  <tr><td>Limite</td><td>Taille max du hardware</td><td>Pas de limite</td></tr>
+  <tr><td>Downtime</td><td>Oui (il faut arreter pour changer de taille)</td><td>Non (on ajoute)</td></tr>
+  <tr><td>AWS</td><td>Changer instance type (t3.micro → t3.large)</td><td>Auto Scaling Group</td></tr>
+</table>
+<p><span class="tip">En QCM, la bonne reponse est presque toujours le scaling HORIZONTAL (ASG).</span></p>
+
+<div class="qcm">
+  <div class="qcm-q">QCM : Comment gerer automatiquement les pics de trafic pour un site web ?</div>
+  <div class="qcm-a">R : ALB + Auto Scaling Group avec une target tracking policy (ex: CPU a 50%)</div>
+</div>
+<div class="qcm">
+  <div class="qcm-q">QCM : Le health check de l'ALB echoue pour une instance. Que se passe-t-il ?</div>
+  <div class="qcm-a">R : L'ALB retire l'instance du target group (plus de trafic envoye). L'ASG peut la terminer et en lancer une nouvelle</div>
+</div>
+<div class="qcm">
+  <div class="qcm-q">QCM : Quelle est la difference entre un ALB et un NLB ?</div>
+  <div class="qcm-a">R : ALB = couche 7 (HTTP/HTTPS, routage par URL). NLB = couche 4 (TCP/UDP, ultra-performant)</div>
+</div>
+
+<!-- ===================================================================== -->
+<div class="pb"></div>
+<h2>9. CloudFormation — Infrastructure as Code</h2>
+
+<h3>Principe</h3>
+<p>CloudFormation = <strong>decrire TOUTE ton infrastructure dans un fichier texte</strong> (YAML ou JSON). AWS cree/modifie/supprime les ressources automatiquement.</p>
+
+<h3>Concepts cles</h3>
+<table>
+  <tr><th>Concept</th><th>Definition</th></tr>
+  <tr><td><strong>Template</strong></td><td>Le fichier YAML/JSON qui decrit les ressources a creer</td></tr>
+  <tr><td><strong>Stack</strong></td><td>L'ensemble des ressources creees a partir d'un template. 1 template → 1 stack</td></tr>
+  <tr><td><strong>Change Set</strong></td><td>Preview des modifications avant de les appliquer</td></tr>
+  <tr><td><strong>Drift Detection</strong></td><td>Detecter si quelqu'un a modifie manuellement une ressource creee par CloudFormation</td></tr>
+  <tr><td><strong>Rollback</strong></td><td>Si une creation echoue → tout est automatiquement supprime (retour a zero)</td></tr>
+</table>
+
+<h4>Sections d'un template CloudFormation</h4>
+<table>
+  <tr><th>Section</th><th>Obligatoire ?</th><th>Role</th></tr>
+  <tr><td><strong>AWSTemplateFormatVersion</strong></td><td>Non</td><td>Version du format (toujours "2010-09-09")</td></tr>
+  <tr><td><strong>Description</strong></td><td>Non</td><td>Description du template</td></tr>
+  <tr><td><strong>Parameters</strong></td><td>Non</td><td>Valeurs dynamiques (ex: type d'instance, nom du bucket)</td></tr>
+  <tr><td><strong>Resources</strong></td><td><strong>OUI</strong></td><td>Les ressources AWS a creer (EC2, VPC, RDS...)</td></tr>
+  <tr><td><strong>Outputs</strong></td><td>Non</td><td>Valeurs retournees apres creation (ex: URL du load balancer)</td></tr>
+</table>
+
+<h3>Avantages IaC</h3>
+<ul>
+  <li><strong>Reproductible</strong> : deployer la meme infra dans dev, staging, prod</li>
+  <li><strong>Versionnable</strong> : le template est dans Git, on peut voir l'historique</li>
+  <li><strong>Automatise</strong> : pas d'erreur humaine de clic dans la console</li>
+  <li><strong>Documentation vivante</strong> : le template IS la documentation de l'infra</li>
+  <li><strong>Rollback</strong> : si ca echoue, tout est annule</li>
+</ul>
+
+<div class="qcm">
+  <div class="qcm-q">QCM : Quel service deploie une infrastructure de facon reproductible et versionnee ?</div>
+  <div class="qcm-a">R : AWS CloudFormation (Infrastructure as Code)</div>
+</div>
+<div class="qcm">
+  <div class="qcm-q">QCM : Quelle section est obligatoire dans un template CloudFormation ?</div>
+  <div class="qcm-a">R : Resources</div>
+</div>
+
+<!-- ===================================================================== -->
+<div class="pb"></div>
+<h2>10. Mise en cache — CloudFront et ElastiCache</h2>
+
+<h3>Amazon CloudFront (CDN)</h3>
+<p>CloudFront = <strong>Content Delivery Network</strong>. Des copies de ton contenu dans 400+ points de presence dans le monde.</p>
+
+<h4>Comment ca marche</h4>
+<ol>
+  <li>L'utilisateur demande une page web</li>
+  <li>CloudFront cherche dans l'edge location la plus proche</li>
+  <li>Si le contenu est en cache → le retourne immediatement (<strong>cache hit</strong>)</li>
+  <li>Si non en cache → va le chercher a l'<strong>origin</strong> (S3, EC2, ALB) → le met en cache → le retourne</li>
+</ol>
+
+<h4>Concepts cles</h4>
+<table>
+  <tr><th>Concept</th><th>Definition</th></tr>
+  <tr><td><strong>Distribution</strong></td><td>La configuration CloudFront (origin, comportement du cache, TTL)</td></tr>
+  <tr><td><strong>Origin</strong></td><td>La source du contenu (S3 bucket, EC2, ALB, HTTP externe)</td></tr>
+  <tr><td><strong>Edge Location</strong></td><td>Point de presence ou le contenu est cache</td></tr>
+  <tr><td><strong>TTL</strong></td><td>Time to Live : combien de temps le contenu reste en cache</td></tr>
+  <tr><td><strong>Invalidation</strong></td><td>Forcer la suppression du cache (payant)</td></tr>
+  <tr><td><strong>OAC/OAI</strong></td><td>Permettre a CloudFront d'acceder a un bucket S3 prive</td></tr>
+</table>
+
+<p><span class="tip">Cas d'usage typique :</span> S3 (site statique) + CloudFront = site web rapide dans le monde entier avec HTTPS gratuit (certificat ACM).</p>
+
+<h3>Amazon ElastiCache</h3>
+<p>ElastiCache = <strong>cache en memoire RAM</strong> pour les requetes de BDD frequentes.</p>
+<table>
+  <tr><th></th><th>Redis</th><th>Memcached</th></tr>
+  <tr><td>Persistence</td><td>Oui (donnees sauvees sur disque)</td><td>Non (tout en memoire)</td></tr>
+  <tr><td>Replication</td><td>Oui (Multi-AZ, Read Replicas)</td><td>Non</td></tr>
+  <tr><td>Types de donnees</td><td>Strings, listes, sets, hashes</td><td>Strings uniquement</td></tr>
+  <tr><td>Cas d'usage</td><td>Sessions, classements, queues</td><td>Cache simple</td></tr>
+</table>
+
+<div class="qcm">
+  <div class="qcm-q">QCM : Comment reduire la latence pour des utilisateurs en Asie accedant a un site heberge en Europe ?</div>
+  <div class="qcm-a">R : Amazon CloudFront (cache le contenu dans les edge locations proches de l'Asie)</div>
+</div>
+<div class="qcm">
+  <div class="qcm-q">QCM : La BDD est surchargee par des requetes repetitives. Comment reduire la charge ?</div>
+  <div class="qcm-a">R : Ajouter Amazon ElastiCache (Redis ou Memcached) devant la BDD</div>
+</div>
+
+<!-- ===================================================================== -->
+<div class="pb"></div>
+<h2>11. Architectures decouplees — SQS, SNS, Lambda</h2>
+
+<h3>Amazon SQS (Simple Queue Service)</h3>
+<ul>
+  <li><strong>File d'attente de messages</strong> geree par AWS</li>
+  <li>Producteur envoie un message → SQS le stocke → Consommateur le lit et le supprime</li>
+  <li><strong>Standard Queue</strong> : debit illimite, au moins une livraison, ordre non garanti</li>
+  <li><strong>FIFO Queue</strong> : ordre garanti, exactement une livraison, 300 msg/s max</li>
+  <li><strong>Visibility Timeout</strong> : temps pendant lequel un message lu est invisible aux autres consommateurs</li>
+  <li><strong>Dead Letter Queue (DLQ)</strong> : queue ou vont les messages qui echouent apres N tentatives</li>
+  <li>Retention : 1 minute a <strong>14 jours</strong> (defaut : 4 jours)</li>
+</ul>
+
+<h3>Amazon SNS (Simple Notification Service)</h3>
+<ul>
+  <li><strong>Pub/Sub</strong> : 1 message → N abonnes</li>
+  <li>Un <strong>topic</strong> recoit des messages et les distribue a tous les abonnes</li>
+  <li>Abonnes possibles : SQS, Lambda, email, SMS, HTTP endpoint</li>
+  <li>Cas d'usage : notifications, alertes, fan-out (1 event → plusieurs actions)</li>
+</ul>
+
+<h3>Pattern SNS + SQS (fan-out)</h3>
+<div class="box">
+<code>Evenement → SNS Topic → SQS Queue 1 (traitement commande)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;→ SQS Queue 2 (envoi email)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;→ SQS Queue 3 (analytics)</code>
+</div>
+<p>Un seul message publie sur SNS est distribue a 3 queues SQS independantes.</p>
+
+<h3>AWS Lambda</h3>
+<ul>
+  <li>Executer du code <strong>sans serveur</strong> (serverless). Tu upload ton code, AWS l'execute</li>
+  <li><strong>Pay per invocation</strong> : tu paies uniquement quand le code tourne (nombre de requetes + duree)</li>
+  <li>Langages : Python, Node.js, Java, Go, .NET, Ruby</li>
+  <li>Duree max : <strong>15 minutes</strong> par execution</li>
+  <li>Memoire : 128 Mo a 10 Go</li>
+  <li>Triggers : API Gateway, S3, SQS, SNS, CloudWatch Events, DynamoDB Streams...</li>
+</ul>
+
+<div class="qcm">
+  <div class="qcm-q">QCM : Comment decoupler un service de traitement de commandes d'un service d'envoi d'email ?</div>
+  <div class="qcm-a">R : Mettre une queue SQS entre les deux. Le service commande envoie un message, le service email le consomme</div>
+</div>
+<div class="qcm">
+  <div class="qcm-q">QCM : Quel service pour executer du code en reponse a un upload S3, sans gerer de serveur ?</div>
+  <div class="qcm-a">R : AWS Lambda (triggered par un evenement S3)</div>
+</div>
+
+<!-- ===================================================================== -->
+<div class="pb"></div>
+<h2>12. Monitoring et Gestion — CloudWatch, CloudTrail, Config</h2>
+
+<h3>Amazon CloudWatch</h3>
+<table>
+  <tr><th>Fonctionnalite</th><th>Detail</th></tr>
+  <tr><td><strong>Metrics</strong></td><td>Metriques de performance (CPU, memoire, disque, reseau). EC2 envoie des metriques toutes les 5 min (gratuit) ou 1 min (detailed monitoring, payant)</td></tr>
+  <tr><td><strong>Alarms</strong></td><td>Declencher une action quand une metrique depasse un seuil. Ex: CPU > 80% → envoyer email SNS ou scaling ASG</td></tr>
+  <tr><td><strong>Logs</strong></td><td>Stocker et analyser les logs de tes applications et services AWS</td></tr>
+  <tr><td><strong>Dashboards</strong></td><td>Tableaux de bord visuels personnalisables</td></tr>
+  <tr><td><strong>Events / EventBridge</strong></td><td>Reagir a des changements d'etat (ex: une instance EC2 s'arrete → lancer une Lambda)</td></tr>
+</table>
+
+<h3>AWS CloudTrail</h3>
+<ul>
+  <li><strong>Audit trail</strong> : enregistre CHAQUE appel API sur ton compte AWS</li>
+  <li>Qui a fait quoi, quand, depuis ou</li>
+  <li>Active par defaut (90 jours de retention gratuite)</li>
+  <li>Cas d'usage : audit de securite, compliance, investigation d'incidents</li>
+</ul>
+
+<h3>AWS Config</h3>
+<ul>
+  <li>Surveille et enregistre la <strong>configuration</strong> de tes ressources AWS au fil du temps</li>
+  <li>Permet de verifier la <strong>conformite</strong> (ex: "tous les buckets S3 doivent etre chiffres")</li>
+  <li>Garde un historique : "cette ressource a change de config le 5 mars"</li>
+</ul>
+
+<h3>AWS Systems Manager</h3>
+<ul>
+  <li>Gerer et configurer tes instances EC2 <strong>a distance</strong></li>
+  <li><strong>Session Manager</strong> : se connecter a une instance SANS SSH (pas besoin de port 22 ouvert !)</li>
+  <li><strong>Parameter Store</strong> : stocker des parametres de configuration et secrets</li>
+  <li><strong>Patch Manager</strong> : automatiser les mises a jour de l'OS</li>
+  <li><strong>Run Command</strong> : executer des commandes sur plusieurs instances a la fois</li>
+</ul>
+
+<div class="qcm">
+  <div class="qcm-q">QCM : Quel service pour surveiller le CPU d'une instance EC2 et envoyer une alerte si > 80% ?</div>
+  <div class="qcm-a">R : Amazon CloudWatch (creer une CloudWatch Alarm)</div>
+</div>
+<div class="qcm">
+  <div class="qcm-q">QCM : Un utilisateur a supprime un bucket S3. Comment savoir qui l'a fait ?</div>
+  <div class="qcm-a">R : AWS CloudTrail (enregistre tous les appels API)</div>
+</div>
+<div class="qcm">
+  <div class="qcm-q">QCM : Comment se connecter a une EC2 sans ouvrir le port SSH (22) ?</div>
+  <div class="qcm-a">R : AWS Systems Manager Session Manager</div>
+</div>
+
+<!-- ===================================================================== -->
+<div class="pb"></div>
+<h2>13. Securite avancee</h2>
+
+<h3>AWS Secrets Manager</h3>
+<ul>
+  <li>Stocker des <strong>secrets</strong> (mots de passe BDD, cles API) de maniere securisee</li>
+  <li><strong>Rotation automatique</strong> des secrets (ex: changer le mot de passe RDS tous les 30 jours)</li>
+  <li>Acces via API : <code>GetSecretValue</code> (l'app demande le secret au runtime)</li>
+  <li>C'est ce qu'on utilise dans le mini-projet pour le mot de passe de la BDD RDS</li>
+</ul>
+
+<h3>AWS KMS (Key Management Service)</h3>
+<ul>
+  <li>Gerer les <strong>cles de chiffrement</strong></li>
+  <li>Utilise par S3, EBS, RDS, etc. pour le chiffrement au repos</li>
+  <li><strong>CMK</strong> (Customer Master Key) : ta propre cle ou une cle geree par AWS</li>
+</ul>
+
+<h3>AWS WAF (Web Application Firewall)</h3>
+<ul>
+  <li>Protege les applications web contre les attaques (SQL injection, XSS, bots)</li>
+  <li>Se place devant <strong>CloudFront, ALB, ou API Gateway</strong></li>
+  <li>Regles basees sur IP, geolocalisation, taille de requete, patterns</li>
+</ul>
+
+<h3>AWS Shield</h3>
+<ul>
+  <li><strong>Shield Standard</strong> (gratuit) : protection DDoS basique, automatique sur tous les services</li>
+  <li><strong>Shield Advanced</strong> (payant, $3000/mois) : protection DDoS avancee, equipe de reponse, remboursement des couts lies a l'attaque</li>
+</ul>
+
+<h3>Chiffrement</h3>
+<table>
+  <tr><th>Type</th><th>Quand</th><th>Exemples</th></tr>
+  <tr><td><strong>Au repos (at rest)</strong></td><td>Donnees stockees sur disque</td><td>S3 (SSE-S3, SSE-KMS), EBS, RDS</td></tr>
+  <tr><td><strong>En transit</strong></td><td>Donnees qui circulent sur le reseau</td><td>HTTPS/TLS, SSL pour RDS</td></tr>
+</table>
+
+<h3>AWS GuardDuty</h3>
+<ul>
+  <li><strong>Detection de menaces</strong> intelligente</li>
+  <li>Analyse CloudTrail, VPC Flow Logs, DNS Logs avec du machine learning</li>
+  <li>Detecte : crypto mining, acces depuis des IPs malveillantes, comportements anormaux</li>
+</ul>
+
+<h3>AWS Inspector</h3>
+<ul>
+  <li>Analyse automatique de <strong>vulnerabilites</strong> dans tes EC2 et conteneurs</li>
+  <li>Verifie les CVE, la configuration reseau, les bonnes pratiques</li>
+</ul>
+
+<div class="qcm">
+  <div class="qcm-q">QCM : Ou stocker le mot de passe de la base de donnees pour une application Node.js sur EC2 ?</div>
+  <div class="qcm-a">R : AWS Secrets Manager (avec un IAM Role sur l'EC2 pour y acceder)</div>
+</div>
+<div class="qcm">
+  <div class="qcm-q">QCM : Quel service protege une application web contre les attaques SQL injection ?</div>
+  <div class="qcm-a">R : AWS WAF (place devant l'ALB ou CloudFront)</div>
+</div>
+
+<!-- ===================================================================== -->
+<div class="pb"></div>
+<h2>14. Couts et facturation — EN DETAIL</h2>
+
+<h3>Modele de tarification AWS</h3>
+<ul>
+  <li><strong>Pay-as-you-go</strong> : payer ce qu'on consomme (pas d'engagement par defaut)</li>
+  <li><strong>Payer moins en reservant</strong> : RI, Savings Plans</li>
+  <li><strong>Payer moins a grande echelle</strong> : reductions de volume (S3 par exemple)</li>
+  <li><strong>Trafic entrant</strong> : gratuit (data IN)</li>
+  <li><strong>Trafic sortant</strong> : payant (data OUT vers Internet)</li>
+  <li><strong>Trafic entre AZ</strong> : payant (petite charge)</li>
+  <li><strong>Trafic dans la meme AZ</strong> : gratuit (si IP privee)</li>
+</ul>
+
+<h3>Outils de gestion des couts</h3>
+<table>
+  <tr><th>Outil</th><th>Role</th><th>Detail</th></tr>
+  <tr><td><strong>AWS Free Tier</strong></td><td>Services gratuits</td><td>t2.micro 750h/mois, S3 5 Go, RDS 750h/mois (pendant 12 mois)</td></tr>
+  <tr><td><strong>AWS Pricing Calculator</strong></td><td>Estimer AVANT</td><td>Simuler le cout mensuel d'une architecture</td></tr>
+  <tr><td><strong>AWS Cost Explorer</strong></td><td>Voir APRES</td><td>Visualiser et analyser les depenses passees, previsions</td></tr>
+  <tr><td><strong>AWS Budgets</strong></td><td>Alertes</td><td>Definir un budget et recevoir des alertes quand on approche/depasse</td></tr>
+  <tr><td><strong>AWS Cost & Usage Report</strong></td><td>Detail complet</td><td>Le rapport le plus detaille (par heure, par ressource)</td></tr>
+  <tr><td><strong>AWS Trusted Advisor</strong></td><td>Recommandations</td><td>5 categories : cout, performance, securite, tolerance aux pannes, limites de service</td></tr>
+</table>
+
+<h3>Strategies de reduction des couts</h3>
+<ol>
+  <li><strong>Reserved Instances / Savings Plans</strong> pour les charges stables (jusqu'a -72%)</li>
+  <li><strong>Spot Instances</strong> pour les charges interruptibles (jusqu'a -90%)</li>
+  <li><strong>Rightsizing</strong> : ne pas surdimensionner (utiliser CloudWatch pour analyser l'usage reel)</li>
+  <li><strong>S3 Lifecycle</strong> : deplacer les anciens fichiers vers Glacier</li>
+  <li><strong>Eteindre les ressources non utilisees</strong> (dev/test la nuit et le week-end)</li>
+  <li><strong>Utiliser les services manages</strong> (RDS vs MySQL sur EC2 : moins de temps d'admin)</li>
+</ol>
+
+<h3>AWS Organizations</h3>
+<ul>
+  <li>Gerer <strong>plusieurs comptes AWS</strong> de maniere centralisee</li>
+  <li><strong>Consolidated Billing</strong> : une seule facture pour tous les comptes (= reductions de volume)</li>
+  <li><strong>Service Control Policies (SCP)</strong> : restreindre les services/actions autorisees par compte</li>
+</ul>
+
+<div class="qcm">
+  <div class="qcm-q">QCM : Quel outil pour estimer le cout d'une architecture AVANT de la deployer ?</div>
+  <div class="qcm-a">R : AWS Pricing Calculator</div>
+</div>
+<div class="qcm">
+  <div class="qcm-q">QCM : Le trafic entrant dans AWS est-il payant ?</div>
+  <div class="qcm-a">R : Non, le trafic entrant (data IN) est gratuit. Seul le trafic sortant (data OUT) est payant</div>
+</div>
+
+<!-- ===================================================================== -->
+<div class="pb"></div>
+<h2>15. Autres services importants</h2>
+
+<table>
+  <tr><th>Service</th><th>Description detaillee</th><th>Cas d'usage</th></tr>
+  <tr><td><strong>Route 53</strong></td><td>DNS manage. Traduit les noms de domaine en IP. Supporte les health checks et le failover</td><td>Nom de domaine, routage DNS, failover</td></tr>
+  <tr><td><strong>Lambda</strong></td><td>Code serverless. Tu paies par execution (nb requetes + duree). Max 15 min. Triggers: S3, SQS, API Gateway</td><td>Traitement d'events, APIs, automatisation</td></tr>
+  <tr><td><strong>API Gateway</strong></td><td>Creer et gerer des API REST/HTTP/WebSocket. Gere throttling, auth, caching</td><td>Backend serverless (API GW + Lambda)</td></tr>
+  <tr><td><strong>Elastic Beanstalk</strong></td><td>PaaS : tu upload ton code, AWS gere EC2, ALB, ASG, monitoring. Supporte Node.js, Python, Java, Docker</td><td>Deploiement rapide d'app web</td></tr>
+  <tr><td><strong>ECS / EKS</strong></td><td>Executer des conteneurs Docker. ECS = AWS natif, EKS = Kubernetes gere</td><td>Microservices conteneurises</td></tr>
+  <tr><td><strong>Fargate</strong></td><td>Executer des conteneurs SANS gerer de serveurs (serverless containers)</td><td>Conteneurs sans maintenance EC2</td></tr>
+  <tr><td><strong>Cognito</strong></td><td>Auth utilisateurs (signup, login, MFA). Supporte OAuth, SAML, social login</td><td>Auth pour app mobile/web</td></tr>
+  <tr><td><strong>AWS Secrets Manager</strong></td><td>Stocker et auto-rotater les secrets (mots de passe, cles API)</td><td>Credentials de BDD</td></tr>
+  <tr><td><strong>AWS Systems Manager</strong></td><td>Gerer les instances (Session Manager, Parameter Store, Patch Manager)</td><td>Administration EC2 a distance</td></tr>
+  <tr><td><strong>Amazon Kinesis</strong></td><td>Traitement de donnees en temps reel (streaming)</td><td>Logs en temps reel, IoT, analytics</td></tr>
+  <tr><td><strong>AWS Step Functions</strong></td><td>Orchestrer des workflows serverless (Lambda, SQS, etc.)</td><td>Processus metier complexes</td></tr>
+</table>
+
+<h3>Architecture Serverless typique</h3>
+<div class="box">
+<code>Client → API Gateway → Lambda → DynamoDB</code><br>
+<code>Client → CloudFront → S3 (site statique)</code><br>
+Aucun serveur a gerer. Scaling automatique. Pay-per-use.
+</div>
+
+<h3>Route 53 — Routing Policies</h3>
+<table>
+  <tr><th>Policy</th><th>Comportement</th></tr>
+  <tr><td><strong>Simple</strong></td><td>1 domaine → 1 IP (ou plusieurs aleatoirement)</td></tr>
+  <tr><td><strong>Weighted</strong></td><td>Repartir le trafic selon des poids (ex: 70% vers v1, 30% vers v2)</td></tr>
+  <tr><td><strong>Latency</strong></td><td>Envoyer vers la region avec la plus faible latence</td></tr>
+  <tr><td><strong>Failover</strong></td><td>Si le primaire est down → basculer vers le secondaire (health check)</td></tr>
+  <tr><td><strong>Geolocation</strong></td><td>Router selon le pays/continent de l'utilisateur</td></tr>
+</table>
+
+<div class="qcm">
+  <div class="qcm-q">QCM : Quel service pour creer une API REST serverless qui execute du code Python ?</div>
+  <div class="qcm-a">R : API Gateway + Lambda (Python)</div>
+</div>
+<div class="qcm">
+  <div class="qcm-q">QCM : Comment deployer une app web rapidement sans gerer l'infrastructure ?</div>
+  <div class="qcm-a">R : AWS Elastic Beanstalk (PaaS — tu upload ton code, AWS gere tout)</div>
+</div>
+
+<!-- ===================================================================== -->
+<div class="pb"></div>
+<h2>16. Concepts du mini-projet — Application concrete</h2>
+
+<p>Le mini-projet est une <strong>application web Node.js</strong> (Express + EJS + MySQL) deployee sur AWS.</p>
+
+<h3>Architecture du projet</h3>
+<div class="box">
+<code>Utilisateur → Internet → EC2 (Node.js port 80, subnet public, SG: port 80+22)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;↓<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;EC2 → Secrets Manager (via IAM Role) → recupere credentials<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;EC2 → RDS MySQL (subnet prive, SG: port 3306 depuis SG-EC2 uniquement)</code>
+</div>
+
+<h3>Ce qu'il faut retenir pour l'exam</h3>
+<table>
+  <tr><th>Concept</th><th>Comment c'est utilise dans le projet</th></tr>
+  <tr><td><strong>VPC</strong></td><td>Reseau isole avec subnets publics et prives</td></tr>
+  <tr><td><strong>Subnet public</strong></td><td>EC2 avec l'app web (accessible depuis Internet)</td></tr>
+  <tr><td><strong>Subnet prive</strong></td><td>RDS MySQL (pas accessible depuis Internet)</td></tr>
+  <tr><td><strong>Security Group EC2</strong></td><td>Port 80 (HTTP) ouvert a tous, port 22 (SSH) ouvert a mon IP</td></tr>
+  <tr><td><strong>Security Group RDS</strong></td><td>Port 3306 ouvert UNIQUEMENT depuis le SG de l'EC2</td></tr>
+  <tr><td><strong>IAM Role</strong></td><td>Attache a l'EC2, permet de lire les secrets dans Secrets Manager</td></tr>
+  <tr><td><strong>Secrets Manager</strong></td><td>Stocke le host, user, password de la BDD RDS (pas en dur dans le code)</td></tr>
+  <tr><td><strong>RDS Multi-AZ</strong></td><td>Haute disponibilite de la BDD (failover auto)</td></tr>
+  <tr><td><strong>User Data</strong></td><td>Script d'installation de Node.js + npm install au premier boot</td></tr>
+  <tr><td><strong>systemd service</strong></td><td>L'app redemarrera automatiquement en cas de crash</td></tr>
+</table>
+
+<!-- ===================================================================== -->
+<div class="pb"></div>
+<h2>17. MEGA Regles d'or pour les QCM</h2>
+
+<div class="important">
+<ol>
+  <li><strong>Haute disponibilite</strong> → Multi-AZ (RDS), ALB + ASG (EC2), S3 (11 neufs)</li>
+  <li><strong>BDD en securite</strong> → Subnet prive + SG qui n'accepte que le SG du web server</li>
+  <li><strong>Credentials dans le code</strong> → JAMAIS. Utiliser Secrets Manager ou IAM Role</li>
+  <li><strong>Site statique</strong> → S3 + CloudFront</li>
+  <li><strong>Reduire les couts stables</strong> → Reserved Instances / Savings Plans</li>
+  <li><strong>Reduire les couts non critiques</strong> → Spot Instances</li>
+  <li><strong>Decoupler</strong> → SQS (1-to-1), SNS (1-to-N)</li>
+  <li><strong>IaC reproductible</strong> → CloudFormation</li>
+  <li><strong>Latence mondiale</strong> → CloudFront (CDN)</li>
+  <li><strong>DNS</strong> → Route 53</li>
+  <li><strong>Serverless</strong> → Lambda + DynamoDB + S3 + API Gateway</li>
+  <li><strong>Scaling</strong> → HORIZONTAL (ASG). Presque toujours la bonne reponse</li>
+  <li><strong>Multi-AZ RDS</strong> = haute dispo | <strong>Read Replica</strong> = performance lecture</li>
+  <li><strong>SG</strong> = stateful (instance) | <strong>NACL</strong> = stateless (subnet)</li>
+  <li><strong>EBS</strong> = 1 instance 1 AZ | <strong>EFS</strong> = N instances multi-AZ | <strong>S3</strong> = objets HTTP</li>
+  <li><strong>Qui a fait quoi ?</strong> → CloudTrail</li>
+  <li><strong>Metriques et alarmes ?</strong> → CloudWatch</li>
+  <li><strong>Config conforme ?</strong> → AWS Config</li>
+  <li><strong>Protection DDoS</strong> → AWS Shield (Standard = gratuit)</li>
+  <li><strong>Protection appli web</strong> → AWS WAF</li>
+  <li><strong>EC2 sans SSH</strong> → Systems Manager Session Manager</li>
+  <li><strong>Conteneurs sans serveur</strong> → Fargate</li>
+  <li><strong>Trafic entrant AWS</strong> → GRATUIT</li>
+  <li><strong>Responsabilite partagee</strong> → AWS = securite DU cloud / Toi = securite DANS le cloud</li>
+  <li><strong>Si "la reponse la plus economique"</strong> → S3, Lambda, Spot, ou Glacier selon le contexte</li>
+</ol>
+</div>
+
+<p style="text-align:center; margin-top:20px; font-size:13pt; font-weight:700;">Bonne chance pour l'exam !</p>
+
+</body>
+</html>

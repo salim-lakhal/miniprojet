@@ -1,0 +1,984 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<title>QCM Training - CSC 8604 Cloud Computing</title>
+<style>
+  @page { size: A4; margin: 1.5cm; }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: Arial, sans-serif; font-size: 10pt; line-height: 1.45; color: #000; }
+  h1 { font-size: 18pt; text-align: center; margin: 15px 0 5px; }
+  .subtitle { text-align: center; font-size: 10pt; color: #555; margin-bottom: 20px; }
+  h2 { font-size: 12pt; background: #000; color: #fff; padding: 5px 10px; margin: 18px 0 8px; }
+  .q { border: 1px solid #ccc; padding: 8px 10px; margin: 6px 0; page-break-inside: avoid; }
+  .q-num { font-weight: 700; margin-bottom: 4px; }
+  .choices { margin-left: 16px; margin-bottom: 0; }
+  .choices li { margin-bottom: 2px; list-style-type: upper-alpha; }
+  .answer { background: #f0f0f0; border-left: 3px solid #000; padding: 4px 8px; margin-top: 5px; font-size: 9.5pt; }
+  .answer strong { font-weight: 700; }
+  .answer .explain { font-style: italic; color: #333; }
+  .pb { page-break-before: always; }
+  .score-box { border: 2px solid #000; padding: 10px; margin: 15px 0; text-align: center; font-size: 11pt; }
+  .tip { font-weight: 700; background: #f5f5f5; padding: 5px 8px; margin: 8px 0; border-left: 3px solid #000; }
+</style>
+</head>
+<body>
+
+<h1>QCM Training Exam — CSC 8604</h1>
+<p class="subtitle">80 questions — Couvre tous les modules — Reponses et explications incluses</p>
+
+<div class="score-box">
+  <strong>Objectif : 90%+ = pret pour l'exam</strong><br>
+  Nombre de bonnes reponses : ___ / 80 &nbsp;&nbsp; Score : ___%
+</div>
+
+<!-- ============================================================ -->
+<h2>PARTIE 1 — Cloud Fundamentals (Q1-10)</h2>
+
+<div class="q">
+  <div class="q-num">Q1. Quel modele de tarification est un avantage cle du cloud computing ?</div>
+  <ol class="choices">
+    <li>Investissement initial eleve (CapEx) avec couts mensuels faibles</li>
+    <li>Tarification fixe annuelle quel que soit l'usage</li>
+    <li>Payer uniquement ce que l'on consomme (pay-as-you-go)</li>
+    <li>Tarification gratuite pour les 5 premieres annees</li>
+  </ol>
+  <div class="answer"><strong>C</strong> — <span class="explain">Le cloud remplace le CapEx (investissement) par de l'OpEx (depenses operationnelles a l'usage).</span></div>
+</div>
+
+<div class="q">
+  <div class="q-num">Q2. Quelle affirmation decrit le mieux le cloud computing ?</div>
+  <ol class="choices">
+    <li>Acheter des serveurs physiques et les installer dans son bureau</li>
+    <li>Livraison de ressources informatiques a la demande via Internet</li>
+    <li>Utiliser uniquement des logiciels open source</li>
+    <li>Heberger des sites web exclusivement sur des serveurs locaux</li>
+  </ol>
+  <div class="answer"><strong>B</strong> — <span class="explain">Definition officielle du cloud computing selon le NIST et AWS.</span></div>
+</div>
+
+<div class="q">
+  <div class="q-num">Q3. Quel modele de service donne au client le PLUS de controle sur l'infrastructure ?</div>
+  <ol class="choices">
+    <li>SaaS</li>
+    <li>PaaS</li>
+    <li>IaaS</li>
+    <li>FaaS</li>
+  </ol>
+  <div class="answer"><strong>C</strong> — <span class="explain">IaaS (ex: EC2) — Tu geres l'OS, les apps, le middleware. AWS gere uniquement le hardware et la virtualisation.</span></div>
+</div>
+
+<div class="q">
+  <div class="q-num">Q4. Amazon RDS est un exemple de quel modele de service ?</div>
+  <ol class="choices">
+    <li>IaaS</li>
+    <li>PaaS</li>
+    <li>SaaS</li>
+    <li>DaaS</li>
+  </ol>
+  <div class="answer"><strong>B</strong> — <span class="explain">RDS est un service gere (AWS gere l'OS, le patching, les backups). Tu geres tes donnees et tes requetes = PaaS.</span></div>
+</div>
+
+<div class="q">
+  <div class="q-num">Q5. Combien d'Availability Zones (AZ) minimum par region AWS ?</div>
+  <ol class="choices">
+    <li>1</li>
+    <li>2</li>
+    <li>4</li>
+    <li>6</li>
+  </ol>
+  <div class="answer"><strong>B</strong> — <span class="explain">Chaque region a au minimum 2 AZ (generalement 3+). Les AZ sont des datacenters physiquement separes.</span></div>
+</div>
+
+<div class="q">
+  <div class="q-num">Q6. Qu'est-ce qu'une Edge Location ?</div>
+  <ol class="choices">
+    <li>Un datacenter principal dans une region</li>
+    <li>Un point de presence pour CloudFront et Route 53</li>
+    <li>Un subnet dans un VPC</li>
+    <li>Une zone de disponibilite secondaire</li>
+  </ol>
+  <div class="answer"><strong>B</strong> — <span class="explain">Les Edge Locations (400+) sont des points de cache pour le CDN CloudFront et le DNS Route 53.</span></div>
+</div>
+
+<div class="q">
+  <div class="q-num">Q7. Quel avantage du cloud permet de deployer en Asie, Europe et Amerique simultanement ?</div>
+  <ol class="choices">
+    <li>Economies d'echelle</li>
+    <li>Depenses variables</li>
+    <li>Deploiement mondial en minutes</li>
+    <li>Fin de la maintenance datacenter</li>
+  </ol>
+  <div class="answer"><strong>C</strong> — <span class="explain">Avantage #6 : AWS a des regions partout dans le monde, tu peux deployer en quelques clics.</span></div>
+</div>
+
+<div class="q">
+  <div class="q-num">Q8. Quel modele de deploiement combine infrastructure sur site et cloud public ?</div>
+  <ol class="choices">
+    <li>Cloud public</li>
+    <li>Cloud prive</li>
+    <li>Cloud hybride</li>
+    <li>Multi-cloud</li>
+  </ol>
+  <div class="answer"><strong>C</strong> — <span class="explain">Hybride = on-premises + cloud public. Utile quand certaines donnees doivent rester en local (compliance).</span></div>
+</div>
+
+<div class="q">
+  <div class="q-num">Q9. Quel est le service AWS qui permet de deployer une app web sans gerer l'infrastructure (PaaS) ?</div>
+  <ol class="choices">
+    <li>Amazon EC2</li>
+    <li>AWS Lambda</li>
+    <li>AWS Elastic Beanstalk</li>
+    <li>Amazon S3</li>
+  </ol>
+  <div class="answer"><strong>C</strong> — <span class="explain">Elastic Beanstalk = PaaS. Tu upload ton code, AWS gere EC2, ALB, ASG, monitoring.</span></div>
+</div>
+
+<div class="q">
+  <div class="q-num">Q10. Les Availability Zones d'une meme region sont :</div>
+  <ol class="choices">
+    <li>Dans le meme batiment physique</li>
+    <li>Physiquement separees mais connectees par reseau tres rapide</li>
+    <li>Situees dans des pays differents</li>
+    <li>Accessibles uniquement via VPN</li>
+  </ol>
+  <div class="answer"><strong>B</strong> — <span class="explain">Les AZ sont dans des batiments separes (alimentation, refroidissement independants) mais relies par fibre a faible latence (&lt;1ms).</span></div>
+</div>
+
+<!-- ============================================================ -->
+<div class="pb"></div>
+<h2>PARTIE 2 — VPC et Reseau (Q11-25)</h2>
+
+<div class="q">
+  <div class="q-num">Q11. Un VPC avec le CIDR 10.0.0.0/16 contient combien d'adresses IP ?</div>
+  <ol class="choices">
+    <li>256</li>
+    <li>65 536</li>
+    <li>16 777 216</li>
+    <li>512</li>
+  </ol>
+  <div class="answer"><strong>B</strong> — <span class="explain">/16 = 2^(32-16) = 2^16 = 65 536 adresses IP.</span></div>
+</div>
+
+<div class="q">
+  <div class="q-num">Q12. Combien d'adresses IP AWS reserve-t-il par subnet ?</div>
+  <ol class="choices">
+    <li>2</li>
+    <li>3</li>
+    <li>5</li>
+    <li>10</li>
+  </ol>
+  <div class="answer"><strong>C</strong> — <span class="explain">AWS reserve 5 IPs : adresse reseau, routeur VPC, DNS, usage futur, broadcast.</span></div>
+</div>
+
+<div class="q">
+  <div class="q-num">Q13. Qu'est-ce qui rend un subnet "public" ?</div>
+  <ol class="choices">
+    <li>Il a un nom qui contient "public"</li>
+    <li>Sa route table a une route 0.0.0.0/0 vers un Internet Gateway</li>
+    <li>Il est dans la premiere AZ de la region</li>
+    <li>Il a un Security Group qui autorise tout le trafic</li>
+  </ol>
+  <div class="answer"><strong>B</strong> — <span class="explain">Un subnet est public quand sa table de routage envoie le trafic Internet (0.0.0.0/0) vers un IGW.</span></div>
+</div>
+
+<div class="q">
+  <div class="q-num">Q14. Combien d'Internet Gateway (IGW) peut-on attacher a un VPC ?</div>
+  <ol class="choices">
+    <li>Autant que de subnets</li>
+    <li>1 par AZ</li>
+    <li>1 seul par VPC</li>
+    <li>Illimite</li>
+  </ol>
+  <div class="answer"><strong>C</strong> — <span class="explain">1 IGW par VPC maximum. L'IGW est hautement disponible par defaut (gere par AWS).</span></div>
+</div>
+
+<div class="q">
+  <div class="q-num">Q15. Ou doit etre place un NAT Gateway ?</div>
+  <ol class="choices">
+    <li>Dans un subnet prive</li>
+    <li>Dans un subnet public</li>
+    <li>En dehors du VPC</li>
+    <li>Dans l'Internet Gateway</li>
+  </ol>
+  <div class="answer"><strong>B</strong> — <span class="explain">Le NAT Gateway est dans un subnet public (il a besoin de l'IGW pour acceder a Internet). Les instances privees routent vers lui.</span></div>
+</div>
+
+<div class="q">
+  <div class="q-num">Q16. A quoi sert un NAT Gateway ?</div>
+  <ol class="choices">
+    <li>Permettre a Internet d'acceder aux instances privees</li>
+    <li>Permettre aux instances privees de sortir vers Internet sans etre accessibles</li>
+    <li>Connecter deux VPC entre eux</li>
+    <li>Chiffrer le trafic entre subnets</li>
+  </ol>
+  <div class="answer"><strong>B</strong> — <span class="explain">NAT = sortie uniquement. Les instances privees peuvent telecharger des MAJ mais ne sont pas joignables depuis Internet.</span></div>
+</div>
+
+<div class="q">
+  <div class="q-num">Q17. Les Security Groups sont :</div>
+  <ol class="choices">
+    <li>Stateless — il faut configurer entree ET sortie</li>
+    <li>Stateful — si l'entree est autorisee, la sortie l'est automatiquement</li>
+    <li>Appliques au niveau du subnet</li>
+    <li>Capables de regles DENY</li>
+  </ol>
+  <div class="answer"><strong>B</strong> — <span class="explain">SG = stateful. Si tu autorises le trafic entrant sur le port 80, la reponse sortante est automatiquement autorisee.</span></div>
+</div>
+
+<div class="q">
+  <div class="q-num">Q18. Les NACL sont :</div>
+  <ol class="choices">
+    <li>Stateful, au niveau de l'instance</li>
+    <li>Stateless, au niveau du subnet</li>
+    <li>Stateful, au niveau du subnet</li>
+    <li>Stateless, au niveau de l'instance</li>
+  </ol>
+  <div class="answer"><strong>B</strong> — <span class="explain">NACL = stateless + niveau subnet. Il faut configurer les regles inbound ET outbound separement.</span></div>
+</div>
+
+<div class="q">
+  <div class="q-num">Q19. Par defaut, un Security Group :</div>
+  <ol class="choices">
+    <li>Autorise tout le trafic entrant et sortant</li>
+    <li>Bloque tout le trafic entrant et sortant</li>
+    <li>Bloque tout le trafic entrant, autorise tout le trafic sortant</li>
+    <li>Autorise tout le trafic entrant, bloque tout le sortant</li>
+  </ol>
+  <div class="answer"><strong>C</strong> — <span class="explain">SG par defaut : tout BLOQUE en entrant (securite), tout AUTORISE en sortant.</span></div>
+</div>
+
+<div class="q">
+  <div class="q-num">Q20. Comment autoriser ton serveur web EC2 a se connecter a ta BDD RDS (port 3306) de maniere securisee ?</div>
+  <ol class="choices">
+    <li>Ouvrir le port 3306 au monde entier (0.0.0.0/0) dans le SG de RDS</li>
+    <li>Mettre le SG du serveur web comme source dans le SG de RDS pour le port 3306</li>
+    <li>Desactiver le SG de RDS</li>
+    <li>Utiliser un NAT Gateway</li>
+  </ol>
+  <div class="answer"><strong>B</strong> — <span class="explain">Chainage de SG : le SG de RDS autorise le port 3306 depuis le SG de l'EC2 web. Jamais ouvrir 3306 a 0.0.0.0/0 !</span></div>
+</div>
+
+<div class="q">
+  <div class="q-num">Q21. Quelle est la principale difference entre SG et NACL pour les regles ?</div>
+  <ol class="choices">
+    <li>SG supporte ALLOW et DENY, NACL uniquement ALLOW</li>
+    <li>SG uniquement ALLOW, NACL supporte ALLOW et DENY</li>
+    <li>Les deux supportent ALLOW et DENY</li>
+    <li>Aucun ne supporte DENY</li>
+  </ol>
+  <div class="answer"><strong>B</strong> — <span class="explain">SG = ALLOW uniquement. NACL = ALLOW + DENY (avec evaluation par numero de regle).</span></div>
+</div>
+
+<div class="q">
+  <div class="q-num">Q22. Un VPC A est peere avec B, et B est peere avec C. A peut-il communiquer avec C ?</div>
+  <ol class="choices">
+    <li>Oui, automatiquement</li>
+    <li>Oui, apres mise a jour des route tables</li>
+    <li>Non, le VPC peering est non transitif</li>
+    <li>Oui, via le NAT Gateway de B</li>
+  </ol>
+  <div class="answer"><strong>C</strong> — <span class="explain">VPC Peering = non transitif. Pour que A parle a C, il faut un peering direct A ↔ C.</span></div>
+</div>
+
+<div class="q">
+  <div class="q-num">Q23. Un subnet peut-il s'etendre sur plusieurs AZ ?</div>
+  <ol class="choices">
+    <li>Oui, c'est le comportement par defaut</li>
+    <li>Oui, si on le configure explicitement</li>
+    <li>Non, un subnet est toujours dans UNE seule AZ</li>
+    <li>Oui, mais uniquement dans les subnets publics</li>
+  </ol>
+  <div class="answer"><strong>C</strong> — <span class="explain">1 subnet = 1 AZ. Pour la haute dispo, tu crees des subnets dans plusieurs AZ.</span></div>
+</div>
+
+<div class="q">
+  <div class="q-num">Q24. Quelle est la route table d'un subnet PRIVE typique ?</div>
+  <ol class="choices">
+    <li>10.0.0.0/16 → local, 0.0.0.0/0 → igw-xxx</li>
+    <li>10.0.0.0/16 → local, 0.0.0.0/0 → nat-xxx</li>
+    <li>0.0.0.0/0 → local</li>
+    <li>10.0.0.0/16 → igw-xxx</li>
+  </ol>
+  <div class="answer"><strong>B</strong> — <span class="explain">Subnet prive : trafic interne via "local", trafic Internet via NAT Gateway (pas IGW).</span></div>
+</div>
+
+<div class="q">
+  <div class="q-num">Q25. Une Elastic IP est gratuite quand :</div>
+  <ol class="choices">
+    <li>Elle est toujours gratuite</li>
+    <li>Elle est associee a une instance EC2 en cours d'execution</li>
+    <li>Elle n'est associee a rien</li>
+    <li>Elle est dans un subnet prive</li>
+  </ol>
+  <div class="answer"><strong>B</strong> — <span class="explain">EIP gratuite quand utilisee (attachee a une instance running). Payante si non utilisee (AWS evite le gaspillage d'IPs).</span></div>
+</div>
+
+<!-- ============================================================ -->
+<div class="pb"></div>
+<h2>PARTIE 3 — EC2 (Q26-38)</h2>
+
+<div class="q">
+  <div class="q-num">Q26. Qu'est-ce qu'une AMI ?</div>
+  <ol class="choices">
+    <li>Un type d'instance EC2</li>
+    <li>Une image/template d'un serveur (OS + config + logiciels)</li>
+    <li>Un service de monitoring</li>
+    <li>Un protocole reseau</li>
+  </ol>
+  <div class="answer"><strong>B</strong> — <span class="explain">AMI = Amazon Machine Image. C'est le "modele" pour lancer une instance (OS + logiciels pre-installes).</span></div>
+</div>
+
+<div class="q">
+  <div class="q-num">Q27. Quelle famille d'instance EC2 est optimisee pour le machine learning (GPU) ?</div>
+  <ol class="choices">
+    <li>T (General Purpose)</li>
+    <li>C (Compute Optimized)</li>
+    <li>P / G (Accelerated Computing)</li>
+    <li>R (Memory Optimized)</li>
+  </ol>
+  <div class="answer"><strong>C</strong> — <span class="explain">Les familles P et G ont des GPU pour le ML, le rendu graphique, et le calcul parallele.</span></div>
+</div>
+
+<div class="q">
+  <div class="q-num">Q28. Le User Data d'une instance EC2 s'execute :</div>
+  <ol class="choices">
+    <li>A chaque redemarrage de l'instance</li>
+    <li>Uniquement au premier lancement de l'instance</li>
+    <li>Quand on le declenche manuellement</li>
+    <li>Toutes les heures automatiquement</li>
+  </ol>
+  <div class="answer"><strong>B</strong> — <span class="explain">User Data = script execute une seule fois au premier boot (en tant que root). Utilise pour l'installation initiale.</span></div>
+</div>
+
+<div class="q">
+  <div class="q-num">Q29. Quel mode d'achat EC2 offre la plus grande reduction mais peut etre interrompu ?</div>
+  <ol class="choices">
+    <li>On-Demand</li>
+    <li>Reserved Instances</li>
+    <li>Spot Instances</li>
+    <li>Dedicated Hosts</li>
+  </ol>
+  <div class="answer"><strong>C</strong> — <span class="explain">Spot = jusqu'a -90% mais AWS peut reprendre l'instance avec 2 min de preavis. Pour du calcul non critique.</span></div>
+</div>
+
+<div class="q">
+  <div class="q-num">Q30. Une application tourne 24/7 de maniere stable depuis 2 ans. Comment optimiser les couts ?</div>
+  <ol class="choices">
+    <li>Utiliser des Spot Instances</li>
+    <li>Utiliser des Reserved Instances ou Savings Plans</li>
+    <li>Utiliser du On-Demand</li>
+    <li>Eteindre l'instance la nuit</li>
+  </ol>
+  <div class="answer"><strong>B</strong> — <span class="explain">Charge stable 24/7 = Reserved Instances ou Savings Plans (engagement 1-3 ans, reduction jusqu'a 72%).</span></div>
+</div>
+
+<div class="q">
+  <div class="q-num">Q31. Comment donner a une EC2 le droit d'acceder a S3 de maniere securisee ?</div>
+  <ol class="choices">
+    <li>Mettre les AWS Access Keys dans le code de l'application</li>
+    <li>Stocker les Access Keys dans un fichier .env sur le serveur</li>
+    <li>Attacher un IAM Role a l'instance EC2</li>
+    <li>Ouvrir le port S3 dans le Security Group</li>
+  </ol>
+  <div class="answer"><strong>C</strong> — <span class="explain">TOUJOURS utiliser un IAM Role pour les services AWS. Jamais mettre des credentials dans le code ou des fichiers.</span></div>
+</div>
+
+<div class="q">
+  <div class="q-num">Q32. Quelle instance fait partie du AWS Free Tier ?</div>
+  <ol class="choices">
+    <li>t3.large</li>
+    <li>m5.xlarge</li>
+    <li>t2.micro</li>
+    <li>c5.2xlarge</li>
+  </ol>
+  <div class="answer"><strong>C</strong> — <span class="explain">t2.micro = Free Tier (750 heures/mois pendant 12 mois).</span></div>
+</div>
+
+<div class="q">
+  <div class="q-num">Q33. Pour quelles licences logicielles utiliserait-on des Dedicated Hosts ?</div>
+  <ol class="choices">
+    <li>Open source (Linux, Apache)</li>
+    <li>Licences liees au hardware physique (Oracle, Windows Server)</li>
+    <li>SaaS (Gmail, Slack)</li>
+    <li>Licences AWS natives</li>
+  </ol>
+  <div class="answer"><strong>B</strong> — <span class="explain">Dedicated Hosts = serveur physique dedie. Necessaire pour les licences logicielles qui se comptent par socket/core physique.</span></div>
+</div>
+
+<div class="q">
+  <div class="q-num">Q34. A quelle adresse une instance EC2 peut-elle acceder a ses propres metadonnees ?</div>
+  <ol class="choices">
+    <li>http://127.0.0.1/metadata</li>
+    <li>http://169.254.169.254/latest/meta-data/</li>
+    <li>http://aws.amazon.com/ec2/meta</li>
+    <li>http://10.0.0.1/instance-info</li>
+  </ol>
+  <div class="answer"><strong>B</strong> — <span class="explain">169.254.169.254 est l'adresse speciale pour les metadonnees EC2 (IP, role IAM, AZ, etc.).</span></div>
+</div>
+
+<div class="q">
+  <div class="q-num">Q35. Quel Placement Group minimise la latence entre instances ?</div>
+  <ol class="choices">
+    <li>Spread</li>
+    <li>Partition</li>
+    <li>Cluster</li>
+    <li>Distributed</li>
+  </ol>
+  <div class="answer"><strong>C</strong> — <span class="explain">Cluster = toutes les instances dans le meme rack. Latence minimale. Pour le HPC.</span></div>
+</div>
+
+<div class="q">
+  <div class="q-num">Q36. Quelle famille d'instance pour une base de donnees en memoire qui a besoin de beaucoup de RAM ?</div>
+  <ol class="choices">
+    <li>C (Compute Optimized)</li>
+    <li>T (General Purpose)</li>
+    <li>R (Memory Optimized)</li>
+    <li>I (Storage Optimized)</li>
+  </ol>
+  <div class="answer"><strong>C</strong> — <span class="explain">R = Memory Optimized. Pour les BDD in-memory, caches, analytics temps reel.</span></div>
+</div>
+
+<div class="q">
+  <div class="q-num">Q37. Que se passe-t-il quand une Spot Instance est interrompue par AWS ?</div>
+  <ol class="choices">
+    <li>AWS donne 30 minutes de preavis</li>
+    <li>AWS donne 2 minutes de preavis</li>
+    <li>L'instance est preservee indefiniment</li>
+    <li>AWS ne peut pas interrompre une Spot Instance</li>
+  </ol>
+  <div class="answer"><strong>B</strong> — <span class="explain">Spot = 2 min de preavis avant interruption. L'appli doit etre tolerante aux interruptions.</span></div>
+</div>
+
+<div class="q">
+  <div class="q-num">Q38. Savings Plans vs Reserved Instances : quelle est la difference principale ?</div>
+  <ol class="choices">
+    <li>Savings Plans offrent plus de reduction</li>
+    <li>Savings Plans sont plus flexibles (pas lies a un type d'instance specifique)</li>
+    <li>Reserved Instances sont plus flexibles</li>
+    <li>Il n'y a aucune difference</li>
+  </ol>
+  <div class="answer"><strong>B</strong> — <span class="explain">Savings Plans = engagement sur un montant $/h, mais tu peux changer de type d'instance, OS, region. Plus flexible que les RI.</span></div>
+</div>
+
+<!-- ============================================================ -->
+<div class="pb"></div>
+<h2>PARTIE 4 — Stockage S3, EBS, EFS (Q39-48)</h2>
+
+<div class="q">
+  <div class="q-num">Q39. Quelle est la durabilite de S3 Standard ?</div>
+  <ol class="choices">
+    <li>99.9%</li>
+    <li>99.99%</li>
+    <li>99.999999999% (11 neufs)</li>
+    <li>100%</li>
+  </ol>
+  <div class="answer"><strong>C</strong> — <span class="explain">S3 = 11 neufs de durabilite. Sur 10 millions d'objets, tu en perds 1 tous les 10 000 ans en moyenne.</span></div>
+</div>
+
+<div class="q">
+  <div class="q-num">Q40. Quel service pour heberger un site web statique (HTML/CSS/JS) sans serveur ?</div>
+  <ol class="choices">
+    <li>Amazon EC2</li>
+    <li>Amazon RDS</li>
+    <li>Amazon S3</li>
+    <li>AWS Lambda</li>
+  </ol>
+  <div class="answer"><strong>C</strong> — <span class="explain">S3 Static Website Hosting = heberger un site statique sans gerer de serveur. Tres economique.</span></div>
+</div>
+
+<div class="q">
+  <div class="q-num">Q41. Quelle classe S3 pour archiver des donnees qu'on ne consulte quasi jamais (recuperation en 12h acceptable) ?</div>
+  <ol class="choices">
+    <li>S3 Standard</li>
+    <li>S3 Standard-IA</li>
+    <li>S3 Glacier Flexible Retrieval</li>
+    <li>S3 Glacier Deep Archive</li>
+  </ol>
+  <div class="answer"><strong>D</strong> — <span class="explain">Deep Archive = le moins cher, recuperation en 12h. Pour l'archivage legal longue duree.</span></div>
+</div>
+
+<div class="q">
+  <div class="q-num">Q42. Comment reduire automatiquement les couts de stockage S3 au fil du temps ?</div>
+  <ol class="choices">
+    <li>Supprimer manuellement les anciens fichiers</li>
+    <li>Configurer des S3 Lifecycle Rules</li>
+    <li>Utiliser un cron job sur EC2</li>
+    <li>Changer le type de bucket</li>
+  </ol>
+  <div class="answer"><strong>B</strong> — <span class="explain">Lifecycle Rules = transitions automatiques (Standard → IA → Glacier → Deep Archive) et expirations.</span></div>
+</div>
+
+<div class="q">
+  <div class="q-num">Q43. Un volume EBS peut etre attache a :</div>
+  <ol class="choices">
+    <li>Plusieurs instances EC2 dans la meme AZ</li>
+    <li>Une seule instance EC2, dans la meme AZ</li>
+    <li>Plusieurs instances EC2 dans differentes AZ</li>
+    <li>N'importe quelle instance dans n'importe quelle region</li>
+  </ol>
+  <div class="answer"><strong>B</strong> — <span class="explain">EBS = 1 instance EC2 dans la meme AZ. Exception : io2 Multi-Attach (multi-instance mais meme AZ, cas rare).</span></div>
+</div>
+
+<div class="q">
+  <div class="q-num">Q44. Quel type de volume EBS pour une BDD haute performance (Oracle) ?</div>
+  <ol class="choices">
+    <li>gp3 (General Purpose SSD)</li>
+    <li>io2 (Provisioned IOPS SSD)</li>
+    <li>st1 (Throughput Optimized HDD)</li>
+    <li>sc1 (Cold HDD)</li>
+  </ol>
+  <div class="answer"><strong>B</strong> — <span class="explain">io2 = jusqu'a 64 000 IOPS. Pour les BDD critiques qui ont besoin de performances I/O tres elevees.</span></div>
+</div>
+
+<div class="q">
+  <div class="q-num">Q45. Quel service de stockage est accessible par PLUSIEURS instances EC2 dans PLUSIEURS AZ ?</div>
+  <ol class="choices">
+    <li>EBS</li>
+    <li>Instance Store</li>
+    <li>EFS</li>
+    <li>Aucun</li>
+  </ol>
+  <div class="answer"><strong>C</strong> — <span class="explain">EFS = systeme de fichiers partage NFS, accessible par N instances dans toutes les AZ d'une region.</span></div>
+</div>
+
+<div class="q">
+  <div class="q-num">Q46. Un EBS Snapshot est stocke dans :</div>
+  <ol class="choices">
+    <li>L'instance EC2</li>
+    <li>Amazon S3 (gere par AWS)</li>
+    <li>Un autre volume EBS</li>
+    <li>Amazon Glacier</li>
+  </ol>
+  <div class="answer"><strong>B</strong> — <span class="explain">Les snapshots EBS sont stockes dans S3 (gere par AWS, tu ne les vois pas dans tes buckets). Peuvent etre copies cross-region.</span></div>
+</div>
+
+<div class="q">
+  <div class="q-num">Q47. Quelle est la taille maximale d'un objet dans S3 ?</div>
+  <ol class="choices">
+    <li>5 Go</li>
+    <li>5 To</li>
+    <li>50 Go</li>
+    <li>Illimitee</li>
+  </ol>
+  <div class="answer"><strong>B</strong> — <span class="explain">Un objet S3 peut faire jusqu'a 5 To. Au-dela de 5 Go, il faut utiliser le multipart upload.</span></div>
+</div>
+
+<div class="q">
+  <div class="q-num">Q48. Le Versioning S3 sert a :</div>
+  <ol class="choices">
+    <li>Accelerer l'acces aux fichiers</li>
+    <li>Reduire les couts de stockage</li>
+    <li>Conserver toutes les versions d'un objet et se proteger des suppressions accidentelles</li>
+    <li>Chiffrer les fichiers</li>
+  </ol>
+  <div class="answer"><strong>C</strong> — <span class="explain">Versioning = chaque modification cree une nouvelle version. Meme un DELETE ne supprime pas vraiment (il ajoute un delete marker).</span></div>
+</div>
+
+<!-- ============================================================ -->
+<div class="pb"></div>
+<h2>PARTIE 5 — RDS et Bases de donnees (Q49-55)</h2>
+
+<div class="q">
+  <div class="q-num">Q49. Multi-AZ RDS sert a :</div>
+  <ol class="choices">
+    <li>Ameliorer les performances de lecture</li>
+    <li>Assurer la haute disponibilite (failover automatique)</li>
+    <li>Reduire les couts</li>
+    <li>Permettre les connexions depuis Internet</li>
+  </ol>
+  <div class="answer"><strong>B</strong> — <span class="explain">Multi-AZ = HAUTE DISPONIBILITE. Copie synchrone dans une autre AZ, failover automatique si la primaire tombe.</span></div>
+</div>
+
+<div class="q">
+  <div class="q-num">Q50. Read Replicas RDS servent a :</div>
+  <ol class="choices">
+    <li>Assurer la haute disponibilite</li>
+    <li>Ameliorer les performances en LECTURE</li>
+    <li>Chiffrer les donnees</li>
+    <li>Sauvegarder la BDD</li>
+  </ol>
+  <div class="answer"><strong>B</strong> — <span class="explain">Read Replica = copie en lecture seule. On redirige les SELECT vers les replicas pour soulager la BDD principale.</span></div>
+</div>
+
+<div class="q">
+  <div class="q-num">Q51. Peut-on lire directement depuis le standby Multi-AZ ?</div>
+  <ol class="choices">
+    <li>Oui, comme un Read Replica</li>
+    <li>Non, le standby est invisible et n'accepte aucune requete</li>
+    <li>Oui, mais seulement en lecture</li>
+    <li>Oui, apres configuration manuelle</li>
+  </ol>
+  <div class="answer"><strong>B</strong> — <span class="explain">Le standby Multi-AZ est en veille. Il ne recoit aucun trafic applicatif. Il prend le relais uniquement en cas de panne.</span></div>
+</div>
+
+<div class="q">
+  <div class="q-num">Q52. Amazon Aurora est compatible avec :</div>
+  <ol class="choices">
+    <li>MongoDB et Redis</li>
+    <li>MySQL et PostgreSQL</li>
+    <li>SQL Server et Oracle</li>
+    <li>DynamoDB</li>
+  </ol>
+  <div class="answer"><strong>B</strong> — <span class="explain">Aurora = MySQL ou PostgreSQL compatible, mais 5x plus rapide que MySQL et 3x que PostgreSQL. Stocke 6 copies sur 3 AZ.</span></div>
+</div>
+
+<div class="q">
+  <div class="q-num">Q53. DynamoDB est :</div>
+  <ol class="choices">
+    <li>Une BDD relationnelle SQL</li>
+    <li>Une BDD NoSQL cle-valeur serverless</li>
+    <li>Un service de cache en memoire</li>
+    <li>Un data warehouse</li>
+  </ol>
+  <div class="answer"><strong>B</strong> — <span class="explain">DynamoDB = NoSQL (cle-valeur + document), serverless, latence en millisecondes, scaling automatique.</span></div>
+</div>
+
+<div class="q">
+  <div class="q-num">Q54. Quel avantage RDS n'offre PAS par rapport a MySQL sur EC2 ?</div>
+  <ol class="choices">
+    <li>Backups automatiques</li>
+    <li>Patching automatique de l'OS</li>
+    <li>Acces SSH au serveur de BDD</li>
+    <li>Multi-AZ en 1 clic</li>
+  </ol>
+  <div class="answer"><strong>C</strong> — <span class="explain">RDS = service gere, donc PAS d'acces SSH. C'est le compromis : moins de controle mais moins de maintenance.</span></div>
+</div>
+
+<div class="q">
+  <div class="q-num">Q55. DAX est :</div>
+  <ol class="choices">
+    <li>Un moteur de BDD relationnelle</li>
+    <li>Un cache en memoire pour DynamoDB (latence microseconde)</li>
+    <li>Un outil de backup pour RDS</li>
+    <li>Un service de monitoring</li>
+  </ol>
+  <div class="answer"><strong>B</strong> — <span class="explain">DAX = DynamoDB Accelerator. Cache compatible DynamoDB, latence en microsecondes au lieu de millisecondes.</span></div>
+</div>
+
+<!-- ============================================================ -->
+<div class="pb"></div>
+<h2>PARTIE 6 — IAM et Securite (Q56-65)</h2>
+
+<div class="q">
+  <div class="q-num">Q56. Le principe du moindre privilege signifie :</div>
+  <ol class="choices">
+    <li>Donner les permissions admin a tout le monde pour simplifier</li>
+    <li>Ne donner que les permissions strictement necessaires</li>
+    <li>Utiliser uniquement le compte root</li>
+    <li>Desactiver toutes les permissions par defaut</li>
+  </ol>
+  <div class="answer"><strong>B</strong> — <span class="explain">Moindre privilege = chaque user/service n'a QUE les permissions dont il a besoin. Principe fondamental de securite AWS.</span></div>
+</div>
+
+<div class="q">
+  <div class="q-num">Q57. Quand utiliser un IAM Role au lieu d'un IAM User ?</div>
+  <ol class="choices">
+    <li>Pour une personne qui se connecte a la console AWS</li>
+    <li>Pour un service AWS (EC2, Lambda) qui accede a d'autres services</li>
+    <li>Pour stocker des mots de passe</li>
+    <li>Pour creer un VPC</li>
+  </ol>
+  <div class="answer"><strong>B</strong> — <span class="explain">IAM Role = pour les services AWS. Credentials temporaires, pas de cles permanentes dans le code. IAM User = pour les humains.</span></div>
+</div>
+
+<div class="q">
+  <div class="q-num">Q58. Quel service enregistre CHAQUE appel API effectue sur un compte AWS ?</div>
+  <ol class="choices">
+    <li>CloudWatch</li>
+    <li>CloudTrail</li>
+    <li>AWS Config</li>
+    <li>GuardDuty</li>
+  </ol>
+  <div class="answer"><strong>B</strong> — <span class="explain">CloudTrail = audit trail. Qui a fait quoi, quand, depuis ou. Chaque appel API est enregistre.</span></div>
+</div>
+
+<div class="q">
+  <div class="q-num">Q59. Ou stocker le mot de passe de la BDD dans une application AWS ?</div>
+  <ol class="choices">
+    <li>En dur dans le code source</li>
+    <li>Dans un fichier .env sur le serveur</li>
+    <li>Dans AWS Secrets Manager</li>
+    <li>Dans un commentaire du code</li>
+  </ol>
+  <div class="answer"><strong>C</strong> — <span class="explain">Secrets Manager = stockage securise + rotation automatique des secrets. L'app les recupere via API au runtime.</span></div>
+</div>
+
+<div class="q">
+  <div class="q-num">Q60. Dans le modele de responsabilite partagee, QUI est responsable du patching de l'OS d'une instance EC2 ?</div>
+  <ol class="choices">
+    <li>AWS</li>
+    <li>Le client</li>
+    <li>Les deux</li>
+    <li>Personne</li>
+  </ol>
+  <div class="answer"><strong>B</strong> — <span class="explain">EC2 = IaaS. Le client gere l'OS, le patching, la configuration. AWS gere le hardware physique.</span></div>
+</div>
+
+<div class="q">
+  <div class="q-num">Q61. Quel service protege contre les attaques DDoS ?</div>
+  <ol class="choices">
+    <li>AWS WAF</li>
+    <li>AWS Shield</li>
+    <li>AWS GuardDuty</li>
+    <li>AWS Inspector</li>
+  </ol>
+  <div class="answer"><strong>B</strong> — <span class="explain">Shield Standard = protection DDoS gratuite et automatique. Shield Advanced = protection avancee ($3000/mois).</span></div>
+</div>
+
+<div class="q">
+  <div class="q-num">Q62. AWS WAF protege contre :</div>
+  <ol class="choices">
+    <li>Les attaques DDoS volumetriques</li>
+    <li>Les attaques applicatives (SQL injection, XSS)</li>
+    <li>Le vol de hardware dans les datacenters</li>
+    <li>Les erreurs de configuration IAM</li>
+  </ol>
+  <div class="answer"><strong>B</strong> — <span class="explain">WAF = Web Application Firewall. Protege couche 7 : SQL injection, XSS, bots. Se place devant ALB/CloudFront/API GW.</span></div>
+</div>
+
+<div class="q">
+  <div class="q-num">Q63. Un bucket S3 est accidentellement rendu public. Dans le modele de responsabilite partagee, c'est la faute de :</div>
+  <ol class="choices">
+    <li>AWS</li>
+    <li>Le client</li>
+    <li>S3 est toujours public par defaut</li>
+    <li>Personne, c'est normal</li>
+  </ol>
+  <div class="answer"><strong>B</strong> — <span class="explain">La configuration des ressources (SG, bucket policies, permissions) est la responsabilite du client.</span></div>
+</div>
+
+<div class="q">
+  <div class="q-num">Q64. Quel type de chiffrement protege les donnees stockees sur disque ?</div>
+  <ol class="choices">
+    <li>Chiffrement en transit</li>
+    <li>Chiffrement au repos (at rest)</li>
+    <li>Chiffrement SSL</li>
+    <li>Chiffrement TLS</li>
+  </ol>
+  <div class="answer"><strong>B</strong> — <span class="explain">At rest = sur disque (EBS, S3, RDS). En transit = sur le reseau (HTTPS/TLS). Les deux sont recommandes.</span></div>
+</div>
+
+<div class="q">
+  <div class="q-num">Q65. MFA signifie :</div>
+  <ol class="choices">
+    <li>Multiple File Access</li>
+    <li>Multi-Factor Authentication</li>
+    <li>Managed Firewall Application</li>
+    <li>Main Failover Architecture</li>
+  </ol>
+  <div class="answer"><strong>B</strong> — <span class="explain">MFA = mot de passe + deuxieme facteur (code du telephone). Obligatoire sur le compte root AWS.</span></div>
+</div>
+
+<!-- ============================================================ -->
+<div class="pb"></div>
+<h2>PARTIE 7 — ALB, Auto Scaling, CloudFormation (Q66-72)</h2>
+
+<div class="q">
+  <div class="q-num">Q66. Quelle est la difference entre un ALB et un NLB ?</div>
+  <ol class="choices">
+    <li>ALB = couche 4 (TCP), NLB = couche 7 (HTTP)</li>
+    <li>ALB = couche 7 (HTTP/HTTPS), NLB = couche 4 (TCP/UDP)</li>
+    <li>ALB est gratuit, NLB est payant</li>
+    <li>Il n'y a pas de difference</li>
+  </ol>
+  <div class="answer"><strong>B</strong> — <span class="explain">ALB = Application LB (couche 7, HTTP, routage par URL/host). NLB = Network LB (couche 4, TCP, ultra-rapide).</span></div>
+</div>
+
+<div class="q">
+  <div class="q-num">Q67. Le health check d'un ALB echoue pour une instance. Que se passe-t-il ?</div>
+  <ol class="choices">
+    <li>L'ALB continue d'envoyer du trafic normalement</li>
+    <li>L'ALB arrete d'envoyer du trafic a cette instance</li>
+    <li>L'ALB redemarr l'instance</li>
+    <li>L'ALB envoie une alerte mais continue</li>
+  </ol>
+  <div class="answer"><strong>B</strong> — <span class="explain">L'instance est marquee "unhealthy" et retiree du target group. Plus aucun trafic ne lui est envoye.</span></div>
+</div>
+
+<div class="q">
+  <div class="q-num">Q68. Dans un ASG, la "Desired Capacity" est :</div>
+  <ol class="choices">
+    <li>Le nombre maximum d'instances</li>
+    <li>Le nombre minimum d'instances</li>
+    <li>Le nombre d'instances que l'ASG essaie de maintenir a l'instant T</li>
+    <li>Le cout souhaite par mois</li>
+  </ol>
+  <div class="answer"><strong>C</strong> — <span class="explain">Desired = nombre cible actuel. L'ASG ajuste pour le maintenir (entre Min et Max).</span></div>
+</div>
+
+<div class="q">
+  <div class="q-num">Q69. Quel type de scaling policy : "maintenir le CPU moyen a 50%" ?</div>
+  <ol class="choices">
+    <li>Simple Scaling</li>
+    <li>Step Scaling</li>
+    <li>Target Tracking Scaling</li>
+    <li>Scheduled Scaling</li>
+  </ol>
+  <div class="answer"><strong>C</strong> — <span class="explain">Target Tracking = l'ASG ajuste le nombre d'instances pour garder une metrique a une valeur cible.</span></div>
+</div>
+
+<div class="q">
+  <div class="q-num">Q70. Le scaling HORIZONTAL signifie :</div>
+  <ol class="choices">
+    <li>Augmenter la taille d'un serveur (plus de CPU/RAM)</li>
+    <li>Ajouter plus de serveurs</li>
+    <li>Deplacer le serveur dans une autre region</li>
+    <li>Activer le chiffrement</li>
+  </ol>
+  <div class="answer"><strong>B</strong> — <span class="explain">Horizontal = ajouter des instances (scale out). Vertical = augmenter la taille (scale up). Horizontal est presque toujours la reponse en QCM.</span></div>
+</div>
+
+<div class="q">
+  <div class="q-num">Q71. Quelle section est OBLIGATOIRE dans un template CloudFormation ?</div>
+  <ol class="choices">
+    <li>Parameters</li>
+    <li>Description</li>
+    <li>Resources</li>
+    <li>Outputs</li>
+  </ol>
+  <div class="answer"><strong>C</strong> — <span class="explain">Resources est la seule section obligatoire. C'est la liste des ressources AWS a creer.</span></div>
+</div>
+
+<div class="q">
+  <div class="q-num">Q72. Que se passe-t-il si la creation d'une stack CloudFormation echoue ?</div>
+  <ol class="choices">
+    <li>Les ressources deja creees restent en place</li>
+    <li>CloudFormation fait un rollback automatique (tout est supprime)</li>
+    <li>AWS envoie un email et attend</li>
+    <li>Il faut supprimer manuellement les ressources</li>
+  </ol>
+  <div class="answer"><strong>B</strong> — <span class="explain">En cas d'echec, CloudFormation supprime automatiquement tout ce qui a ete cree (rollback). Tout ou rien.</span></div>
+</div>
+
+<!-- ============================================================ -->
+<div class="pb"></div>
+<h2>PARTIE 8 — Services avances et scenarios (Q73-80)</h2>
+
+<div class="q">
+  <div class="q-num">Q73. Comment decoupler deux microservices pour ameliorer la resilience ?</div>
+  <ol class="choices">
+    <li>Les deployer sur la meme instance EC2</li>
+    <li>Mettre une queue SQS entre les deux</li>
+    <li>Utiliser un Security Group commun</li>
+    <li>Les connecter directement via HTTP</li>
+  </ol>
+  <div class="answer"><strong>B</strong> — <span class="explain">SQS = file d'attente. Si un service tombe, les messages attendent. L'autre service les traite quand il est pret.</span></div>
+</div>
+
+<div class="q">
+  <div class="q-num">Q74. SNS vs SQS : quelle est la difference ?</div>
+  <ol class="choices">
+    <li>SNS est un stockage, SQS est un reseau</li>
+    <li>SNS = 1 message vers N abonnes (pub/sub), SQS = file d'attente (1 pour 1)</li>
+    <li>SQS = 1 message vers N abonnes, SNS = file d'attente</li>
+    <li>Il n'y a pas de difference</li>
+  </ol>
+  <div class="answer"><strong>B</strong> — <span class="explain">SNS = pub/sub (haut-parleur). SQS = queue (comptoir). SNS+SQS = fan-out pattern (1 message → N queues).</span></div>
+</div>
+
+<div class="q">
+  <div class="q-num">Q75. Comment reduire la latence d'un site pour des utilisateurs en Asie (site heberge en Europe) ?</div>
+  <ol class="choices">
+    <li>Augmenter la taille de l'instance EC2</li>
+    <li>Utiliser Amazon CloudFront (CDN)</li>
+    <li>Ajouter un Read Replica RDS</li>
+    <li>Utiliser un Security Group plus permissif</li>
+  </ol>
+  <div class="answer"><strong>B</strong> — <span class="explain">CloudFront met en cache le contenu dans les edge locations proches des utilisateurs. Reduit drastiquement la latence.</span></div>
+</div>
+
+<div class="q">
+  <div class="q-num">Q76. Le trafic ENTRANT dans AWS (data IN) est :</div>
+  <ol class="choices">
+    <li>Payant au Go</li>
+    <li>Gratuit</li>
+    <li>Payant uniquement en heures de pointe</li>
+    <li>Inclus dans le cout de l'instance</li>
+  </ol>
+  <div class="answer"><strong>B</strong> — <span class="explain">Data IN = gratuit. Data OUT (vers Internet) = payant au Go. Trafic inter-AZ = petite charge.</span></div>
+</div>
+
+<div class="q">
+  <div class="q-num">Q77. Quel service pour executer du code en reponse a un event (ex: upload S3) SANS gerer de serveur ?</div>
+  <ol class="choices">
+    <li>EC2</li>
+    <li>ECS</li>
+    <li>Lambda</li>
+    <li>Elastic Beanstalk</li>
+  </ol>
+  <div class="answer"><strong>C</strong> — <span class="explain">Lambda = serverless, event-driven. Tu paies par execution. Max 15 min. Triggers : S3, SQS, API Gateway, etc.</span></div>
+</div>
+
+<div class="q">
+  <div class="q-num">Q78. Comment se connecter a une instance EC2 SANS ouvrir le port SSH (22) ?</div>
+  <ol class="choices">
+    <li>Impossible, SSH est obligatoire</li>
+    <li>AWS Systems Manager Session Manager</li>
+    <li>Via RDP (port 3389)</li>
+    <li>Via CloudFront</li>
+  </ol>
+  <div class="answer"><strong>B</strong> — <span class="explain">Session Manager = connexion securisee via le navigateur, sans port SSH ouvert. Plus securise et auditable.</span></div>
+</div>
+
+<div class="q">
+  <div class="q-num">Q79. Quel outil AWS donne des recommandations sur les couts, la performance, la securite et les limites ?</div>
+  <ol class="choices">
+    <li>AWS Config</li>
+    <li>AWS Trusted Advisor</li>
+    <li>AWS Inspector</li>
+    <li>AWS CloudWatch</li>
+  </ol>
+  <div class="answer"><strong>B</strong> — <span class="explain">Trusted Advisor = conseiller automatique dans 5 domaines : cout, performance, securite, tolerance aux pannes, limites de service.</span></div>
+</div>
+
+<div class="q">
+  <div class="q-num">Q80. SCENARIO : Tu deploies une app web avec EC2 + RDS. La BDD doit etre hautement disponible, les credentials ne doivent pas etre dans le code, et le site doit supporter les pics de trafic. Quelle architecture ?</div>
+  <ol class="choices">
+    <li>1 EC2 on-demand, RDS single-AZ, credentials en .env, pas de load balancer</li>
+    <li>ASG + ALB, RDS Multi-AZ, Secrets Manager pour les credentials, EC2 avec IAM Role</li>
+    <li>Lambda + DynamoDB + S3</li>
+    <li>Elastic Beanstalk avec une seule instance</li>
+  </ol>
+  <div class="answer"><strong>B</strong> — <span class="explain">C'est exactement l'architecture du mini-projet ! ALB+ASG pour le scaling, Multi-AZ pour la haute dispo BDD, Secrets Manager + IAM Role pour la securite.</span></div>
+</div>
+
+<!-- ============================================================ -->
+<div class="pb"></div>
+<h2>GRILLE DE REPONSES RAPIDE</h2>
+
+<table>
+  <tr><th>Q</th><th>R</th><th>Q</th><th>R</th><th>Q</th><th>R</th><th>Q</th><th>R</th><th>Q</th><th>R</th></tr>
+  <tr><td>1</td><td><strong>C</strong></td><td>17</td><td><strong>B</strong></td><td>33</td><td><strong>B</strong></td><td>49</td><td><strong>B</strong></td><td>65</td><td><strong>B</strong></td></tr>
+  <tr><td>2</td><td><strong>B</strong></td><td>18</td><td><strong>B</strong></td><td>34</td><td><strong>B</strong></td><td>50</td><td><strong>B</strong></td><td>66</td><td><strong>B</strong></td></tr>
+  <tr><td>3</td><td><strong>C</strong></td><td>19</td><td><strong>C</strong></td><td>35</td><td><strong>C</strong></td><td>51</td><td><strong>B</strong></td><td>67</td><td><strong>B</strong></td></tr>
+  <tr><td>4</td><td><strong>B</strong></td><td>20</td><td><strong>B</strong></td><td>36</td><td><strong>C</strong></td><td>52</td><td><strong>B</strong></td><td>68</td><td><strong>C</strong></td></tr>
+  <tr><td>5</td><td><strong>B</strong></td><td>21</td><td><strong>B</strong></td><td>37</td><td><strong>B</strong></td><td>53</td><td><strong>B</strong></td><td>69</td><td><strong>C</strong></td></tr>
+  <tr><td>6</td><td><strong>B</strong></td><td>22</td><td><strong>C</strong></td><td>38</td><td><strong>B</strong></td><td>54</td><td><strong>C</strong></td><td>70</td><td><strong>B</strong></td></tr>
+  <tr><td>7</td><td><strong>C</strong></td><td>23</td><td><strong>C</strong></td><td>39</td><td><strong>C</strong></td><td>55</td><td><strong>B</strong></td><td>71</td><td><strong>C</strong></td></tr>
+  <tr><td>8</td><td><strong>C</strong></td><td>24</td><td><strong>B</strong></td><td>40</td><td><strong>C</strong></td><td>56</td><td><strong>B</strong></td><td>72</td><td><strong>B</strong></td></tr>
+  <tr><td>9</td><td><strong>C</strong></td><td>25</td><td><strong>B</strong></td><td>41</td><td><strong>D</strong></td><td>57</td><td><strong>B</strong></td><td>73</td><td><strong>B</strong></td></tr>
+  <tr><td>10</td><td><strong>B</strong></td><td>26</td><td><strong>B</strong></td><td>42</td><td><strong>B</strong></td><td>58</td><td><strong>B</strong></td><td>74</td><td><strong>B</strong></td></tr>
+  <tr><td>11</td><td><strong>B</strong></td><td>27</td><td><strong>C</strong></td><td>43</td><td><strong>B</strong></td><td>59</td><td><strong>C</strong></td><td>75</td><td><strong>B</strong></td></tr>
+  <tr><td>12</td><td><strong>C</strong></td><td>28</td><td><strong>B</strong></td><td>44</td><td><strong>B</strong></td><td>60</td><td><strong>B</strong></td><td>76</td><td><strong>B</strong></td></tr>
+  <tr><td>13</td><td><strong>B</strong></td><td>29</td><td><strong>C</strong></td><td>45</td><td><strong>C</strong></td><td>61</td><td><strong>B</strong></td><td>77</td><td><strong>C</strong></td></tr>
+  <tr><td>14</td><td><strong>C</strong></td><td>30</td><td><strong>B</strong></td><td>46</td><td><strong>B</strong></td><td>62</td><td><strong>B</strong></td><td>78</td><td><strong>B</strong></td></tr>
+  <tr><td>15</td><td><strong>B</strong></td><td>31</td><td><strong>C</strong></td><td>47</td><td><strong>B</strong></td><td>63</td><td><strong>B</strong></td><td>79</td><td><strong>B</strong></td></tr>
+  <tr><td>16</td><td><strong>B</strong></td><td>32</td><td><strong>C</strong></td><td>48</td><td><strong>C</strong></td><td>64</td><td><strong>B</strong></td><td>80</td><td><strong>B</strong></td></tr>
+</table>
+
+<div class="tip">
+  <strong>Conseils pour l'exam :</strong><br>
+  - Si tu hesites, elimine d'abord les reponses absurdes (il y en a toujours 1-2)<br>
+  - "Haute disponibilite" → pense Multi-AZ, ALB+ASG<br>
+  - "Securite" → pense IAM Role, SG restrictif, subnet prive, Secrets Manager<br>
+  - "Cout" → pense Reserved (stable) ou Spot (non critique)<br>
+  - "Scaling" → pense HORIZONTAL (ASG), pas vertical<br>
+  - "Decoupler" → pense SQS<br>
+  - Si la question dit "sans gerer de serveur" → pense Lambda, Fargate, ou S3
+</div>
+
+<p style="text-align:center; margin-top:20px; font-size:13pt; font-weight:700;">Score objectif : 72/80 (90%) = tu es pret !</p>
+
+</body>
+</html>

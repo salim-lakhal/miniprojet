@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html><head><title>Add Student</title>
+<style>body{font-family:Arial;margin:20px}input{margin:5px;padding:5px;width:300px}button{padding:10px 20px;background:#4CAF50;color:white;border:none;cursor:pointer}</style>
+</head><body>
+<h1>Add a new student</h1>
+<form method="POST" action="/add">
+<div>Name: <input name="name" required></div>
+<div>Address: <input name="address" required></div>
+<div>City: <input name="city" required></div>
+<div>State: <input name="state" required></div>
+<div>Email: <input name="email" type="email" required></div>
+<div>Phone: <input name="phone" required></div>
+<button type="submit">Add Student</button>
+</form>
+<a href="/">Back</a>
+</body></html>
