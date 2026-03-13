@@ -139,3 +139,6 @@ revision/
 | **Secrets Manager** | Stockage securise du mot de passe de la BDD |
 | **IAM** | Role qui donne a l'EC2 le droit de lire les secrets |
 | **Security Groups** | Firewall virtuel (port 80 pour le web, 3306 pour la BDD) |
+
+
+backup sur S3: une fois par jour
