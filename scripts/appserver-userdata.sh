@@ -1,4 +1,8 @@
 #!/bin/bash
+# EC2 User Data — Phase 3/4 Production
+# Installs Node.js and deploys the CRUD app with RDS + Secrets Manager.
+# The DB credentials are fetched at runtime via IAM Role — no hardcoded secrets.
+
 apt-get update -y
 apt-get install -y nodejs npm mysql-client jq awscli
 
@@ -50,7 +54,6 @@ async function initDB() {
   db.connect((err) => {
     if (err) { console.error('DB error:', err); process.exit(1); }
     console.log('Connected to RDS MySQL');
-    // Create table if not exists
     db.query(`CREATE TABLE IF NOT EXISTS students (
       id INT AUTO_INCREMENT PRIMARY KEY,
       name VARCHAR(255),

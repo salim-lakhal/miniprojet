@@ -1,12 +1,13 @@
 #!/bin/bash
+# EC2 User Data — Phase 2 POC
+# Installs Node.js, MySQL, and deploys the CRUD app on a single instance.
+
 apt-get update -y
 apt-get install -y nodejs npm mysql-server
 
-# Start MySQL
 systemctl start mysql
 systemctl enable mysql
 
-# Create database and user
 mysql -u root << 'SQL'
 CREATE DATABASE IF NOT EXISTS STUDENTS;
 USE STUDENTS;
@@ -26,7 +27,6 @@ GRANT ALL PRIVILEGES ON STUDENTS.* TO 'nodeapp'@'localhost';
 FLUSH PRIVILEGES;
 SQL
 
-# Create the web application
 mkdir -p /home/ubuntu/app
 cd /home/ubuntu/app
 
@@ -44,7 +44,6 @@ PKGJSON
 
 npm install
 
-# Create the app
 cat > app.js << 'APPJS'
 const express = require('express');
 const mysql = require('mysql2');
@@ -167,6 +166,5 @@ cat > views/edit.ejs << 'VIEWEDIT'
 </body></html>
 VIEWEDIT
 
-# Run the app
 cd /home/ubuntu/app
 node app.js &

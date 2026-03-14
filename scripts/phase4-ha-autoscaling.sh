@@ -1,91 +1,58 @@
 #!/bin/bash
 # =============================================================================
-# PHASE 4 - HAUTE DISPONIBILITE ET MISE A L'ECHELLE (AUTO SCALING)
+# PHASE 4 — HIGH AVAILABILITY & AUTO SCALING
 # =============================================================================
-# Projet : Application CRUD Node.js sur AWS
-# Phase   : 4 - Mise en oeuvre de la haute disponibilité et de la capacité
-#           de mise à l'échelle élevée
+# Reference script for setting up ALB + Auto Scaling Group on AWS.
+# NOT meant to be run as-is — replace all <PLACEHOLDER> values with your
+# actual resource IDs before executing each section.
 #
-# Ce script est un DOCUMENT DE REFERENCE - il n'est pas conçu pour être
-# exécuté en une seule fois. Chaque section doit être exécutée manuellement
-# après avoir remplacé les valeurs entre chevrons (<...>) par les valeurs
-# réelles de votre environnement.
+# Target architecture:
+#   Internet -> ALB (public subnets, 2 AZs) -> ASG (2-6 EC2) -> RDS MySQL
 #
-# Architecture cible :
-#   Internet → ALB (subnets publics, 2 AZ) → ASG (2-6 EC2) → RDS MySQL
-#
-# Prérequis :
-#   - Phase 1 complétée : VPC, subnets, Security Groups
-#   - Phase 2 complétée : EC2 avec l'application Node.js fonctionnelle
-#   - Phase 3 complétée : RDS MySQL, Secrets Manager
-#   - AWS CLI configuré avec les bonnes permissions
-#   - Une AMI créée à partir de l'instance EC2 de la phase 2
+# Prerequisites:
+#   - Phase 1: VPC, subnets, Security Groups
+#   - Phase 2: EC2 with working Node.js app
+#   - Phase 3: RDS MySQL, Secrets Manager
+#   - AWS CLI configured with proper permissions
+#   - AMI created from Phase 2 EC2 instance
 # =============================================================================
 
 # ---------------------------------------------------------------------------
-# VARIABLES DE CONFIGURATION - A REMPLACER PAR VOS VALEURS
+# CONFIGURATION — replace with your values
 # ---------------------------------------------------------------------------
 
-# Réseau
-VPC_ID="<YOUR-VPC-ID>"                        # ex: vpc-0abc123def456789
-SUBNET_PUBLIC_1="<YOUR-SUBNET-PUBLIC-1>"      # ex: subnet-0abc123def456789 (AZ-a)
-SUBNET_PUBLIC_2="<YOUR-SUBNET-PUBLIC-2>"      # ex: subnet-0def456abc789012 (AZ-b)
-SUBNET_PRIVATE_1="<YOUR-SUBNET-PRIVATE-1>"    # ex: subnet-0789012abc123def (AZ-a, pour ASG si souhaité)
-SUBNET_PRIVATE_2="<YOUR-SUBNET-PRIVATE-2>"    # ex: subnet-0012def789456abc (AZ-b, pour ASG si souhaité)
+VPC_ID="<YOUR-VPC-ID>"
+SUBNET_PUBLIC_1="<YOUR-SUBNET-PUBLIC-1>"
+SUBNET_PUBLIC_2="<YOUR-SUBNET-PUBLIC-2>"
+SUBNET_PRIVATE_1="<YOUR-SUBNET-PRIVATE-1>"
+SUBNET_PRIVATE_2="<YOUR-SUBNET-PRIVATE-2>"
 
-# Security Groups (créés en Phase 1)
-WEB_SG_ID="<YOUR-WEB-SG-ID>"                 # ex: sg-0abc123def456789 (autorise port 80/443)
-ALB_SG_ID="<YOUR-ALB-SG-ID>"                 # ex: sg-0def456abc789012 (SG dédié à l'ALB, optionnel)
-# Note : si vous n'avez pas de SG dédié à l'ALB, créez-en un (voir section ALB)
+WEB_SG_ID="<YOUR-WEB-SG-ID>"
+ALB_SG_ID="<YOUR-ALB-SG-ID>"
 
-# AMI de l'instance EC2 de la phase 2 (avec l'application déjà installée)
-APP_AMI_ID="<YOUR-APP-AMI-ID>"               # ex: ami-0abc123def456789
-
-# Type d'instance pour les EC2 du groupe Auto Scaling
-INSTANCE_TYPE="t2.micro"                      # Ajuster selon les besoins
-
-# Paire de clés SSH
-KEY_PAIR_NAME="<YOUR-KEY-PAIR-NAME>"          # ex: vockey
-
-# ARN du secret Secrets Manager (créé en Phase 3)
-SECRET_ARN="<YOUR-SECRET-ARN>"               # ex: arn:aws:secretsmanager:us-east-1:123456789012:secret:db-credentials-xxxxx
-
-# Region AWS
-AWS_REGION="us-east-1"                       # Adapter si nécessaire
-
-# Tags communs
-PROJECT_TAG="miniprojet"
+APP_AMI_ID="<YOUR-APP-AMI-ID>"
+INSTANCE_TYPE="t2.micro"
+KEY_PAIR_NAME="<YOUR-KEY-PAIR-NAME>"
+SECRET_ARN="<YOUR-SECRET-ARN>"
+AWS_REGION="us-east-1"
+PROJECT_TAG="student-crud"
 OWNER_TAG="<YOUR-NAME>"
 
 # ---------------------------------------------------------------------------
-# TACHE 1 : CREATION DE L'APPLICATION LOAD BALANCER (ALB)
+# TASK 1: APPLICATION LOAD BALANCER
 # ---------------------------------------------------------------------------
-# L'ALB distribue le trafic entrant sur les instances EC2 du groupe Auto
-# Scaling. Il est déployé dans les subnets PUBLICS pour être accessible
-# depuis Internet.
-#
-# Composants créés :
-#   1. Security Group pour l'ALB (si pas encore fait)
-#   2. Target Group (groupe cible qui reçoit le trafic)
-#   3. Application Load Balancer
-#   4. Listener HTTP sur le port 80
 
-echo "=== TACHE 1 : Application Load Balancer ==="
+echo "=== TASK 1: Application Load Balancer ==="
 
-# ---- 1.1 (Optionnel) Créer un Security Group dédié à l'ALB ----
-# Bonne pratique : un SG distinct pour l'ALB permet de contrôler finement
-# le trafic. Le SG de l'EC2 (web-sg) n'autorisera alors le port 80 que
-# depuis ce SG ALB (et non depuis Internet directement).
-
+# 1.1 Create a dedicated Security Group for the ALB
 aws ec2 create-security-group \
   --group-name "alb-sg" \
-  --description "Security Group pour l'Application Load Balancer" \
+  --description "Security Group for the Application Load Balancer" \
   --vpc-id "$VPC_ID" \
   --tag-specifications "ResourceType=security-group,Tags=[{Key=Name,Value=alb-sg},{Key=Project,Value=$PROJECT_TAG}]" \
   --region "$AWS_REGION"
-# => Notez le GroupId retourné et affectez-le à ALB_SG_ID ci-dessus
 
-# Autoriser le trafic HTTP entrant (port 80) depuis Internet vers l'ALB
+# Allow inbound HTTP (port 80) from the internet
 aws ec2 authorize-security-group-ingress \
   --group-id "$ALB_SG_ID" \
   --protocol tcp \
@@ -93,17 +60,7 @@ aws ec2 authorize-security-group-ingress \
   --cidr 0.0.0.0/0 \
   --region "$AWS_REGION"
 
-# Autoriser le trafic HTTPS entrant (port 443) depuis Internet vers l'ALB
-# (à activer si vous configurez un certificat SSL/TLS)
-# aws ec2 authorize-security-group-ingress \
-#   --group-id "$ALB_SG_ID" \
-#   --protocol tcp \
-#   --port 443 \
-#   --cidr 0.0.0.0/0 \
-#   --region "$AWS_REGION"
-
-# Mettre à jour le SG des EC2 pour n'accepter le port 80 que depuis l'ALB
-# (remplacer la règle existante "0.0.0.0/0" par une règle source SG ALB)
+# Restrict EC2 web SG to only accept traffic from the ALB SG
 aws ec2 authorize-security-group-ingress \
   --group-id "$WEB_SG_ID" \
   --protocol tcp \
@@ -111,10 +68,7 @@ aws ec2 authorize-security-group-ingress \
   --source-group "$ALB_SG_ID" \
   --region "$AWS_REGION"
 
-# ---- 1.2 Créer le Target Group ----
-# Le Target Group définit comment l'ALB achemine les requêtes vers les
-# instances EC2. Le health check vérifie que l'application répond correctement.
-
+# 1.2 Create Target Group
 aws elbv2 create-target-group \
   --name "nodejs-app-tg" \
   --protocol HTTP \
@@ -130,21 +84,10 @@ aws elbv2 create-target-group \
   --matcher "HttpCode=200" \
   --tags "Key=Name,Value=nodejs-app-tg" "Key=Project,Value=$PROJECT_TAG" \
   --region "$AWS_REGION"
-# => Notez le TargetGroupArn retourné
-# Exemple de sortie :
-# {
-#   "TargetGroups": [{
-#     "TargetGroupArn": "arn:aws:elasticloadbalancing:us-east-1:123456789012:targetgroup/nodejs-app-tg/abc123def456",
-#     ...
-#   }]
-# }
 
-TARGET_GROUP_ARN="<TARGET-GROUP-ARN>"        # Remplacer par l'ARN obtenu ci-dessus
+TARGET_GROUP_ARN="<TARGET-GROUP-ARN>"
 
-# ---- 1.3 Créer l'Application Load Balancer ----
-# L'ALB est déployé dans les deux subnets PUBLICS pour la haute disponibilité
-# sur deux zones de disponibilité.
-
+# 1.3 Create ALB across two public subnets for multi-AZ availability
 aws elbv2 create-load-balancer \
   --name "nodejs-app-alb" \
   --subnets "$SUBNET_PUBLIC_1" "$SUBNET_PUBLIC_2" \
@@ -154,22 +97,11 @@ aws elbv2 create-load-balancer \
   --ip-address-type ipv4 \
   --tags "Key=Name,Value=nodejs-app-alb" "Key=Project,Value=$PROJECT_TAG" \
   --region "$AWS_REGION"
-# => Notez le LoadBalancerArn et le DNSName retournés
-# Exemple de sortie :
-# {
-#   "LoadBalancers": [{
-#     "LoadBalancerArn": "arn:aws:elasticloadbalancing:us-east-1:...",
-#     "DNSName": "nodejs-app-alb-1234567890.us-east-1.elb.amazonaws.com",
-#     ...
-#   }]
-# }
 
-ALB_ARN="<ALB-ARN>"                          # Remplacer par l'ARN obtenu ci-dessus
-ALB_DNS="<ALB-DNS-NAME>"                     # Remplacer par le DNSName obtenu ci-dessus
+ALB_ARN="<ALB-ARN>"
+ALB_DNS="<ALB-DNS-NAME>"
 
-# ---- 1.4 Créer le Listener HTTP (port 80) ----
-# Le listener écoute sur le port 80 et transfère les requêtes au Target Group.
-
+# 1.4 Create HTTP listener forwarding to the target group
 aws elbv2 create-listener \
   --load-balancer-arn "$ALB_ARN" \
   --protocol HTTP \
@@ -178,75 +110,35 @@ aws elbv2 create-listener \
   --tags "Key=Name,Value=nodejs-app-listener-http" "Key=Project,Value=$PROJECT_TAG" \
   --region "$AWS_REGION"
 
-# ---- Vérifications ----
-# Vérifier que l'ALB est en état "active"
+# Verify ALB state
 aws elbv2 describe-load-balancers \
   --names "nodejs-app-alb" \
   --query "LoadBalancers[0].{State:State.Code,DNSName:DNSName}" \
   --output table \
   --region "$AWS_REGION"
 
-# Vérifier le Target Group
-aws elbv2 describe-target-groups \
-  --names "nodejs-app-tg" \
-  --query "TargetGroups[0].{ARN:TargetGroupArn,Protocol:Protocol,Port:Port,HealthCheck:HealthCheckPath}" \
-  --output table \
-  --region "$AWS_REGION"
-
 # ---------------------------------------------------------------------------
-# TACHE 2 : AUTO SCALING EC2
+# TASK 2: EC2 AUTO SCALING
 # ---------------------------------------------------------------------------
-# L'Auto Scaling Group (ASG) gère automatiquement le nombre d'instances EC2
-# en fonction de la charge. Il garantit qu'un minimum de 2 instances tournent
-# en permanence (une par AZ) pour la haute disponibilité.
-#
-# Composants créés :
-#   1. Launch Template (modèle de lancement des instances)
-#   2. Auto Scaling Group
-#   3. Scaling Policies (politiques de mise à l'échelle)
 
-echo "=== TACHE 2 : Auto Scaling Group ==="
+echo "=== TASK 2: Auto Scaling Group ==="
 
-# ---- 2.1 Créer le Launch Template ----
-# Le Launch Template définit la configuration de chaque nouvelle instance
-# EC2 créée par l'ASG : AMI, type, réseau, User Data, etc.
-#
-# IMPORTANT : L'AMI utilisée doit être créée à partir de l'instance EC2
-# de la phase 2, avec l'application Node.js déjà installée et configurée.
-# Pour créer une AMI depuis une instance existante :
-#   aws ec2 create-image \
-#     --instance-id <INSTANCE-ID-PHASE2> \
-#     --name "nodejs-app-ami-$(date +%Y%m%d)" \
-#     --description "AMI avec application Node.js CRUD" \
-#     --no-reboot \
-#     --region "$AWS_REGION"
-
-# User Data : script exécuté au démarrage de chaque nouvelle instance
-# Ce script démarre l'application si elle n'est pas déjà démarrée au boot.
-# Adapter selon votre installation (pm2, systemd, etc.)
+# 2.1 Create Launch Template
 cat > /tmp/user-data.sh << 'USERDATA'
 #!/bin/bash
-# Démarrage automatique de l'application Node.js au boot
-# Si pm2 est installé et configuré pour démarrer au boot, ce bloc peut
-# être simplifié ou supprimé.
-
-# Vérifier que l'application tourne (si pm2 est utilisé)
 if command -v pm2 &> /dev/null; then
   pm2 resurrect || pm2 start /home/ec2-user/app/index.js --name "nodejs-app"
   pm2 save
 else
-  # Démarrage direct avec node (non recommandé en production)
   cd /home/ec2-user/app && node index.js &
 fi
 USERDATA
 
-# Encoder le User Data en base64
 USER_DATA_B64=$(base64 -w 0 /tmp/user-data.sh)
 
-# Créer le Launch Template
 aws ec2 create-launch-template \
   --launch-template-name "nodejs-app-lt" \
-  --version-description "Version initiale - Phase 4" \
+  --version-description "Initial version - Phase 4" \
   --launch-template-data "{
     \"ImageId\": \"$APP_AMI_ID\",
     \"InstanceType\": \"$INSTANCE_TYPE\",
@@ -272,21 +164,10 @@ aws ec2 create-launch-template \
   }" \
   --tag-specifications "ResourceType=launch-template,Tags=[{Key=Name,Value=nodejs-app-lt},{Key=Project,Value=$PROJECT_TAG}]" \
   --region "$AWS_REGION"
-# => Notez le LaunchTemplateId et la Version retournés
 
-LAUNCH_TEMPLATE_ID="<LAUNCH-TEMPLATE-ID>"   # Remplacer par l'ID obtenu ci-dessus
+LAUNCH_TEMPLATE_ID="<LAUNCH-TEMPLATE-ID>"
 
-# ---- 2.2 Créer l'Auto Scaling Group ----
-# L'ASG déploie les instances dans les subnets PUBLICS (ou privés selon
-# l'architecture). Avec min=2 et desired=2, une instance est déployée
-# dans chaque AZ dès la création.
-#
-# Note sur le choix des subnets :
-#   - Subnets PUBLICS : les instances ont une IP publique (utile pour debug SSH)
-#   - Subnets PRIVÉS  : les instances n'ont pas d'IP publique (recommandé en
-#     production - l'ALB route le trafic depuis les subnets publics vers les
-#     instances privées via le Target Group)
-
+# 2.2 Create Auto Scaling Group (min 2 instances across 2 AZs)
 aws autoscaling create-auto-scaling-group \
   --auto-scaling-group-name "nodejs-app-asg" \
   --launch-template "LaunchTemplateId=$LAUNCH_TEMPLATE_ID,Version=\$Latest" \
@@ -303,22 +184,8 @@ aws autoscaling create-auto-scaling-group \
     "Key=Project,Value=$PROJECT_TAG,PropagateAtLaunch=true" \
     "Key=ManagedBy,Value=AutoScaling,PropagateAtLaunch=true" \
   --region "$AWS_REGION"
-# Paramètres clés :
-#   --min-size 2           : toujours au moins 2 instances (1 par AZ)
-#   --max-size 6           : jamais plus de 6 instances (contrôle des coûts)
-#   --desired-capacity 2   : état initial souhaité
-#   --health-check-type ELB: utilise les health checks de l'ALB (plus précis
-#                            que les checks EC2 seuls)
-#   --health-check-grace-period 300 : laisse 5 min au démarrage avant de
-#                            considérer l'instance comme unhealthy
-#   --default-cooldown 300 : attente de 5 min entre deux actions de scaling
-#                            pour éviter les oscillations
 
-# ---- 2.3 Créer la Scaling Policy - Target Tracking (CPU 50%) ----
-# La politique Target Tracking ajuste automatiquement le nombre d'instances
-# pour maintenir l'utilisation CPU à 50% en moyenne.
-# AWS calcule automatiquement les seuils scale-out et scale-in.
-
+# 2.3 Target Tracking scaling policy — keep average CPU at 50%
 aws autoscaling put-scaling-policy \
   --auto-scaling-group-name "nodejs-app-asg" \
   --policy-name "nodejs-app-cpu-target-tracking" \
@@ -331,16 +198,8 @@ aws autoscaling put-scaling-policy \
     \"DisableScaleIn\": false
   }" \
   --region "$AWS_REGION"
-# => TargetValue 50.0 : l'ASG ajuste le nombre d'instances pour que
-#    l'utilisation CPU moyenne reste autour de 50%
-# => DisableScaleIn false : autorise la réduction du nombre d'instances
-#    quand la charge diminue (économie de coûts)
 
-# ---- 2.4 (Optionnel) Scaling Policies supplémentaires ----
-# Politique de montée en charge rapide sur pic CPU (Step Scaling)
-# Utile si vous souhaitez un comportement plus agressif en scale-out.
-
-# Scale-Out : ajouter 2 instances si CPU > 70% pendant 2 minutes
+# 2.4 (Optional) Step scaling for aggressive scale-out on CPU spikes
 aws autoscaling put-scaling-policy \
   --auto-scaling-group-name "nodejs-app-asg" \
   --policy-name "nodejs-app-scale-out-step" \
@@ -352,12 +211,11 @@ aws autoscaling put-scaling-policy \
   --metric-aggregation-type "Average" \
   --region "$AWS_REGION"
 
-# Créer l'alarme CloudWatch déclenchant le scale-out
-SCALE_OUT_POLICY_ARN="<SCALE-OUT-POLICY-ARN>"  # ARN retourné par la commande précédente
+SCALE_OUT_POLICY_ARN="<SCALE-OUT-POLICY-ARN>"
 
 aws cloudwatch put-metric-alarm \
   --alarm-name "nodejs-app-high-cpu" \
-  --alarm-description "CPU > 70% - Scale Out ASG" \
+  --alarm-description "CPU > 70% - Scale Out" \
   --metric-name "CPUUtilization" \
   --namespace "AWS/EC2" \
   --statistic "Average" \
@@ -370,7 +228,7 @@ aws cloudwatch put-metric-alarm \
   --treat-missing-data "notBreaching" \
   --region "$AWS_REGION"
 
-# Scale-In : retirer 1 instance si CPU < 25% pendant 5 minutes
+# Scale-in: remove 1 instance when CPU < 25% for 5 minutes
 aws autoscaling put-scaling-policy \
   --auto-scaling-group-name "nodejs-app-asg" \
   --policy-name "nodejs-app-scale-in-step" \
@@ -380,11 +238,11 @@ aws autoscaling put-scaling-policy \
   --metric-aggregation-type "Average" \
   --region "$AWS_REGION"
 
-SCALE_IN_POLICY_ARN="<SCALE-IN-POLICY-ARN>"    # ARN retourné par la commande précédente
+SCALE_IN_POLICY_ARN="<SCALE-IN-POLICY-ARN>"
 
 aws cloudwatch put-metric-alarm \
   --alarm-name "nodejs-app-low-cpu" \
-  --alarm-description "CPU < 25% - Scale In ASG" \
+  --alarm-description "CPU < 25% - Scale In" \
   --metric-name "CPUUtilization" \
   --namespace "AWS/EC2" \
   --statistic "Average" \
@@ -397,8 +255,7 @@ aws cloudwatch put-metric-alarm \
   --treat-missing-data "notBreaching" \
   --region "$AWS_REGION"
 
-# ---- Vérifications ----
-# Vérifier l'état de l'ASG
+# Verify ASG state
 aws autoscaling describe-auto-scaling-groups \
   --auto-scaling-group-names "nodejs-app-asg" \
   --query "AutoScalingGroups[0].{
@@ -410,116 +267,35 @@ aws autoscaling describe-auto-scaling-groups \
   --output json \
   --region "$AWS_REGION"
 
-# Vérifier l'état des instances dans le Target Group
-aws elbv2 describe-target-health \
-  --target-group-arn "$TARGET_GROUP_ARN" \
-  --query "TargetHealthDescriptions[*].{InstanceId:Target.Id,Port:Target.Port,State:TargetHealth.State,Description:TargetHealth.Description}" \
-  --output table \
-  --region "$AWS_REGION"
-
-# Vérifier les politiques de scaling
-aws autoscaling describe-policies \
-  --auto-scaling-group-name "nodejs-app-asg" \
-  --query "ScalingPolicies[*].{Name:PolicyName,Type:PolicyType,Status:Enabled}" \
-  --output table \
-  --region "$AWS_REGION"
-
 # ---------------------------------------------------------------------------
-# TACHE 3 : ACCEDER A L'APPLICATION VIA L'ALB
+# TASK 3: ACCESS THE APP VIA ALB
 # ---------------------------------------------------------------------------
-# Une fois l'ALB actif et les instances enregistrées et saines dans le
-# Target Group, l'application est accessible via le DNS de l'ALB.
 
-echo "=== TACHE 3 : Accès à l'application ==="
+echo "=== TASK 3: Application access ==="
 
-# Récupérer le DNS de l'ALB
 aws elbv2 describe-load-balancers \
   --names "nodejs-app-alb" \
   --query "LoadBalancers[0].DNSName" \
   --output text \
   --region "$AWS_REGION"
-# => Retourne quelque chose comme :
-#    nodejs-app-alb-1234567890.us-east-1.elb.amazonaws.com
 
-# Tester l'accès HTTP à l'application
-# curl http://<ALB-DNS-NAME>/
-# curl http://<ALB-DNS-NAME>/api/items      # Exemple d'endpoint CRUD
-
-# Vérifier les logs d'accès ALB (si activés dans S3) :
-# aws s3 ls s3://<YOUR-ALB-LOGS-BUCKET>/AWSLogs/<ACCOUNT-ID>/elasticloadbalancing/
-
-# Attendre que le Target Group soit healthy (polling manuel ou script)
-echo "Attendre que les instances soient 'healthy' dans le Target Group..."
-echo "Commande de vérification :"
-echo "  aws elbv2 describe-target-health --target-group-arn $TARGET_GROUP_ARN --region $AWS_REGION"
-echo ""
-echo "URL d'accès à l'application : http://$ALB_DNS"
+echo "Application URL: http://$ALB_DNS"
 
 # ---------------------------------------------------------------------------
-# TACHE 4 : TESTS DE CHARGE ET DECLENCHEMENT DU SCALING
+# TASK 4: LOAD TESTING
 # ---------------------------------------------------------------------------
-# Pour vérifier que l'Auto Scaling fonctionne correctement, on génère une
-# charge artificielle sur les instances EC2 via l'ALB.
-#
-# Deux méthodes présentées :
-#   A. stress : génère une charge CPU directement sur l'instance (via SSH)
-#   B. ab (Apache Bench) : génère des requêtes HTTP via l'ALB
 
-echo "=== TACHE 4 : Tests de charge ==="
-
-# ---- Méthode A : stress (charge CPU directe sur une instance) ----
-# Prérequis : accès SSH à une instance de l'ASG
-# Installer stress si absent : sudo yum install -y stress (Amazon Linux)
-#                              sudo apt-get install -y stress (Ubuntu)
-
-# Se connecter à une instance (récupérer l'IP publique ou utiliser SSM)
-INSTANCE_ID_1="<INSTANCE-ID-FROM-ASG>"       # Une instance de l'ASG
-
-# Option 1 : SSH direct (si IP publique assignée et port 22 ouvert)
-# ssh -i ~/.ssh/<KEY-PAIR>.pem ec2-user@<INSTANCE-PUBLIC-IP>
-
-# Option 2 : AWS Systems Manager Session Manager (pas besoin de port 22)
-# aws ssm start-session --target "$INSTANCE_ID_1" --region "$AWS_REGION"
-
-# Sur l'instance (une fois connecté), générer de la charge CPU :
-# sudo stress --cpu 4 --timeout 300
-# Explication :
-#   --cpu 4      : 4 workers consommant 100% CPU chacun
-#   --timeout 300: durée de 5 minutes (300 secondes)
-
-# Surveiller le scaling en temps réel (depuis votre terminal local) :
-# watch -n 30 "aws autoscaling describe-auto-scaling-groups \
-#   --auto-scaling-group-names nodejs-app-asg \
-#   --query 'AutoScalingGroups[0].{Desired:DesiredCapacity,Min:MinSize,Max:MaxSize,Count:length(Instances)}' \
-#   --output table --region $AWS_REGION"
-
-# ---- Méthode B : Apache Bench (charge HTTP via l'ALB) ----
-# Prérequis : ab installé (yum install -y httpd-tools / apt install apache2-utils)
-# Depuis votre machine locale ou une instance EC2 dans le VPC :
+echo "=== TASK 4: Load testing ==="
 
 ALB_URL="http://$ALB_DNS/"
 
-# Test de base : 1000 requêtes, 50 connexions concurrentes
+# Apache Bench: 1000 requests, 50 concurrent
 # ab -n 1000 -c 50 "$ALB_URL"
 
-# Test de charge prolongé : 100 000 requêtes, 200 connexions concurrentes, timeout 30s
+# Heavy load test: 100k requests, 200 concurrent, 5 min timeout
 # ab -n 100000 -c 200 -t 300 -k "$ALB_URL"
-# Explication :
-#   -n 100000  : nombre total de requêtes
-#   -c 200     : requêtes concurrentes simultanées
-#   -t 300     : durée maximale en secondes (5 minutes)
-#   -k         : keep-alive HTTP (plus réaliste)
 
-# ---- Méthode C : wrk (outil de charge HTTP haute performance) ----
-# Installation : voir https://github.com/wg/wrk
-# wrk -t 12 -c 400 -d 300s "$ALB_URL"
-# Explication :
-#   -t 12   : 12 threads
-#   -c 400  : 400 connexions ouvertes
-#   -d 300s : durée 5 minutes
-
-# ---- Surveillance pendant le test de charge ----
-# 1. Métriques CPU via CloudWatch (console AWS ou CLI)
+# Monitor CPU during test
 aws cloudwatch get-metric-statistics \
   --metric-name "CPUUtilization" \
   --namespace "AWS/EC2" \
@@ -532,7 +308,7 @@ aws cloudwatch get-metric-statistics \
   --output table \
   --region "$AWS_REGION"
 
-# 2. Historique des activités de scaling
+# Check scaling activity
 aws autoscaling describe-scaling-activities \
   --auto-scaling-group-name "nodejs-app-asg" \
   --max-items 10 \
@@ -540,99 +316,23 @@ aws autoscaling describe-scaling-activities \
   --output table \
   --region "$AWS_REGION"
 
-# 3. État actuel de l'ASG (nombre d'instances)
-aws autoscaling describe-auto-scaling-groups \
-  --auto-scaling-group-names "nodejs-app-asg" \
-  --query "AutoScalingGroups[0].{Desired:DesiredCapacity,Running:length(Instances[?LifecycleState=='InService'])}" \
-  --output table \
-  --region "$AWS_REGION"
-
-# 4. Métriques de l'ALB (requêtes, temps de réponse, erreurs)
-aws cloudwatch get-metric-statistics \
-  --metric-name "RequestCount" \
-  --namespace "AWS/ApplicationELB" \
-  --dimensions "Name=LoadBalancer,Value=<ALB-DIMENSION-VALUE>" \
-  --start-time "$(date -u -d '10 minutes ago' +%Y-%m-%dT%H:%M:%SZ)" \
-  --end-time "$(date -u +%Y-%m-%dT%H:%M:%SZ)" \
-  --period 60 \
-  --statistics "Sum" \
-  --output table \
-  --region "$AWS_REGION"
-# Note : <ALB-DIMENSION-VALUE> est la valeur du LoadBalancer dans les dimensions
-# CloudWatch. Format : app/<ALB-NAME>/<ID>
-# Récupérer avec :
-# aws elbv2 describe-load-balancers --names nodejs-app-alb \
-#   --query "LoadBalancers[0].LoadBalancerArn" --output text | \
-#   sed 's|arn:aws:elasticloadbalancing:[^:]*:[^:]*:loadbalancer/||'
-
 # ---------------------------------------------------------------------------
-# NETTOYAGE (optionnel - a la fin des tests)
+# CLEANUP (optional — tears down all Phase 4 resources)
 # ---------------------------------------------------------------------------
-# ATTENTION : Ces commandes suppriment toutes les ressources créées dans
-# cette phase. A exécuter uniquement si vous souhaitez nettoyer l'environnement.
 
-echo "=== NETTOYAGE (optionnel) ==="
+# Order matters — respect dependency chain:
+# 1. CloudWatch alarms
+# 2. Auto Scaling Group (force-delete terminates instances)
+# 3. Launch Template
+# 4. ALB Listener
+# 5. ALB
+# 6. Target Group
+# 7. ALB Security Group
 
-# Ordre de suppression (respecter les dépendances) :
-
-# 1. Supprimer les alarmes CloudWatch
-# aws cloudwatch delete-alarms \
-#   --alarm-names "nodejs-app-high-cpu" "nodejs-app-low-cpu" \
-#   --region "$AWS_REGION"
-
-# 2. Supprimer l'Auto Scaling Group (force-delete termine les instances)
-# aws autoscaling delete-auto-scaling-group \
-#   --auto-scaling-group-name "nodejs-app-asg" \
-#   --force-delete \
-#   --region "$AWS_REGION"
-
-# 3. Supprimer le Launch Template
-# aws ec2 delete-launch-template \
-#   --launch-template-id "$LAUNCH_TEMPLATE_ID" \
-#   --region "$AWS_REGION"
-
-# 4. Supprimer le Listener
-# aws elbv2 delete-listener \
-#   --listener-arn "<LISTENER-ARN>" \
-#   --region "$AWS_REGION"
-
-# 5. Supprimer l'ALB
-# aws elbv2 delete-load-balancer \
-#   --load-balancer-arn "$ALB_ARN" \
-#   --region "$AWS_REGION"
-
-# 6. Supprimer le Target Group (attendre que l'ALB soit supprimé)
-# aws elbv2 delete-target-group \
-#   --target-group-arn "$TARGET_GROUP_ARN" \
-#   --region "$AWS_REGION"
-
-# 7. Supprimer le Security Group ALB (si créé)
-# aws ec2 delete-security-group \
-#   --group-id "$ALB_SG_ID" \
-#   --region "$AWS_REGION"
-
-# ---------------------------------------------------------------------------
-# RECAPITULATIF DE L'ARCHITECTURE DEPLOYEE
-# ---------------------------------------------------------------------------
-# Internet
-#     |
-#     v
-# [ALB - nodejs-app-alb]          <- Subnets publics (2 AZ)
-#     |  Port 80 (HTTP)
-#     v
-# [Target Group - nodejs-app-tg]  <- Health check sur /
-#     |
-#     +--------+--------+
-#     |                 |
-#     v                 v
-# [EC2 - AZ-a]      [EC2 - AZ-b]  <- Auto Scaling Group (2 à 6 instances)
-#     |                 |            <- Launch Template: nodejs-app-lt
-#     +--------+--------+            <- Scaling: CPU cible 50%
-#              |
-#              v
-#         [RDS MySQL]               <- Subnet privé, accessible via db-sg
-#
-# Flux de scaling :
-#   CPU moyen > 50% -> AWS ajoute des instances (jusqu'à max=6)
-#   CPU moyen < 50% -> AWS retire des instances (jusqu'à min=2)
-# =============================================================================
+# Uncomment to execute:
+# aws cloudwatch delete-alarms --alarm-names "nodejs-app-high-cpu" "nodejs-app-low-cpu" --region "$AWS_REGION"
+# aws autoscaling delete-auto-scaling-group --auto-scaling-group-name "nodejs-app-asg" --force-delete --region "$AWS_REGION"
+# aws ec2 delete-launch-template --launch-template-id "$LAUNCH_TEMPLATE_ID" --region "$AWS_REGION"
+# aws elbv2 delete-load-balancer --load-balancer-arn "$ALB_ARN" --region "$AWS_REGION"
+# aws elbv2 delete-target-group --target-group-arn "$TARGET_GROUP_ARN" --region "$AWS_REGION"
+# aws ec2 delete-security-group --group-id "$ALB_SG_ID" --region "$AWS_REGION"

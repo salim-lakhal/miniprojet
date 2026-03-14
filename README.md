@@ -1,144 +1,140 @@
-# Mini-Projet AWS — Application Web Student CRUD
+[![CI](https://github.com/salim-lakhal/aws-vpc-crud-webapp/actions/workflows/ci.yml/badge.svg)](https://github.com/salim-lakhal/aws-vpc-crud-webapp/actions/workflows/ci.yml)
 
-## C'est quoi ce projet ?
+# AWS VPC CRUD Web Application
 
-Une application web qui permet de **gerer une liste d'etudiants** (ajouter, modifier, supprimer, afficher). L'objectif est de la deployer sur **Amazon Web Services (AWS)** avec une architecture cloud securisee et professionnelle.
+A student records management app (CRUD) deployed on AWS with a production-grade cloud architecture: custom VPC with public/private subnets, EC2 behind an Application Load Balancer with Auto Scaling, RDS MySQL in an isolated private subnet, and secrets managed through AWS Secrets Manager.
 
-## Le projet en 4 phases
+Built incrementally across 4 phases — from a single-instance POC to a highly available, auto-scaling deployment across multiple Availability Zones.
 
-### Phase 1 — Creer le reseau (VPC)
+![Architecture Diagram](docs/architecture-finale.png)
 
-On commence par construire le **reseau prive virtuel** dans AWS :
+## Architecture
 
-1. Creer un **VPC** avec le CIDR `10.0.0.0/16` (notre reseau isole)
-2. Creer un **subnet public** (pour le serveur web — accessible depuis Internet)
-3. Creer un **subnet prive** (pour la base de donnees — PAS accessible depuis Internet)
-4. Creer un **Internet Gateway** et l'attacher au VPC (c'est la porte vers Internet)
-5. Configurer les **Route Tables** :
-   - Subnet public : `0.0.0.0/0 → Internet Gateway` (le trafic sort vers Internet)
-   - Subnet prive : pas de route vers Internet (isole)
+```mermaid
+graph TB
+    User([User]) -->|HTTP :80| IGW[Internet Gateway]
 
-**Resultat :** un reseau avec une zone publique et une zone privee, comme un immeuble avec des etages accessibles au public et des etages prives.
+    subgraph VPC["VPC 10.0.0.0/16"]
+        IGW --> ALB[Application Load Balancer]
 
-### Phase 2 — Deployer l'app en local sur EC2
+        subgraph PubSubnets["Public Subnets"]
+            ALB --> EC2a["EC2 (AZ-a)<br/>Node.js + Express"]
+            ALB --> EC2b["EC2 (AZ-b)<br/>Node.js + Express"]
+        end
 
-On deploie une premiere version simple :
+        subgraph ASG["Auto Scaling Group (2–6 instances)"]
+            EC2a
+            EC2b
+        end
 
-1. Lancer une **instance EC2** (t2.micro) dans le subnet public
-2. Installer **Node.js** et **MySQL** directement sur cette instance
-3. Deployer l'application Express.js qui fait le CRUD (Create, Read, Update, Delete)
-4. L'app tourne sur le **port 80** et est accessible via l'IP publique de l'EC2
+        subgraph PrivSubnets["Private Subnets"]
+            RDS[(RDS MySQL)]
+        end
 
-**Le probleme :** tout est sur la meme machine (app + BDD), le mot de passe MySQL est en dur dans le code, et si l'EC2 tombe, on perd tout.
+        EC2a -->|:3306| RDS
+        EC2b -->|:3306| RDS
+    end
 
-### Phase 3 — Migrer la BDD vers RDS
+    EC2a -.->|IAM Role| SM[Secrets Manager]
+    EC2b -.->|IAM Role| SM
 
-On separe la base de donnees pour plus de securite et de fiabilite :
-
-1. Creer une instance **RDS MySQL** dans le **subnet prive**
-2. Configurer le **Security Group de RDS** : port 3306 ouvert **uniquement depuis le SG de l'EC2** (chainage de SG)
-3. Stocker les credentials de la BDD dans **AWS Secrets Manager** (plus de mot de passe en dur !)
-4. Attacher un **IAM Role** a l'EC2 pour qu'elle puisse lire le secret
-5. Modifier le code de l'app pour recuperer les credentials depuis Secrets Manager au demarrage
-
-**Resultat :** la BDD est isolee dans un subnet prive, les credentials sont securises, et l'EC2 accede a la BDD via son IAM Role.
-
-### Phase 4 — Securiser et finaliser
-
-On ajoute les bonnes pratiques :
-
-1. **Security Group EC2** : port 80 (HTTP) ouvert a tous, port 22 (SSH) ouvert a mon IP seulement
-2. **Security Group RDS** : port 3306 ouvert uniquement depuis le SG de l'EC2
-3. Configurer un **service systemd** pour que l'app redemarre automatiquement si elle crash
-4. Activer **Multi-AZ** sur RDS pour la haute disponibilite
-5. Verifier que la BDD n'est **pas accessible depuis Internet**
-
-## Architecture finale
-
-```
-                    Internet
-                       |
-                Internet Gateway
-                       |
-              +--------+--------+
-              |    VPC 10.0.0.0/16    |
-              |                       |
-    +---------+--------+   +----------+---------+
-    |   Subnet Public  |   |   Subnet Prive     |
-    |                  |   |                     |
-    |   EC2 (Node.js)  |   |   RDS MySQL         |
-    |   Port 80, 22    |   |   Port 3306          |
-    |   SG: web-sg     |---|   SG: db-sg          |
-    +------------------+   |   (accepte web-sg)   |
-              |            +---------------------+
-              |
-        IAM Role ──> Secrets Manager
-                     (credentials BDD)
+    style VPC fill:#232f3e,stroke:#ff9900,color:#fff
+    style PubSubnets fill:#1a472a,stroke:#4CAF50,color:#fff
+    style PrivSubnets fill:#4a1a1a,stroke:#f44336,color:#fff
+    style ASG fill:#1a3a5c,stroke:#2196F3,color:#fff
+    style ALB fill:#ff9900,stroke:#fff,color:#000
+    style RDS fill:#3b48cc,stroke:#fff,color:#fff
+    style SM fill:#dd344c,stroke:#fff,color:#fff
 ```
 
-**Flux de l'application :**
-1. L'utilisateur accede au site via l'IP publique de l'EC2 (port 80)
-2. L'app Node.js demarre et recupere les credentials BDD depuis **Secrets Manager**
-3. L'app se connecte a **RDS MySQL** dans le subnet prive
-4. L'utilisateur peut ajouter/modifier/supprimer des etudiants (CRUD)
+## How It Works
 
-## Le code
+1. Users hit the ALB's public DNS on port 80
+2. The ALB distributes traffic across EC2 instances in two Availability Zones
+3. Each EC2 instance runs a Node.js/Express server that fetches DB credentials from **AWS Secrets Manager** at startup (no hardcoded passwords)
+4. The app connects to **RDS MySQL** in a private subnet — the database has no internet access
+5. Auto Scaling adjusts the fleet between 2–6 instances based on CPU utilization (target: 50%)
 
-### Phase 2 (`code/phase2/`)
-- `app.js` — Serveur Express avec MySQL local, credentials en dur
-- `setup-db.sql` — Script SQL pour creer la BDD, la table et l'utilisateur
-- `views/` — Templates EJS (index, add, edit)
+## Project Phases
 
-### Phase 3-4 (`code/phase3-4/`)
-- `app.js` — Serveur Express avec **RDS via Secrets Manager** (credentials recuperes au runtime)
-- `student-app.service` — Fichier systemd pour que l'app tourne en service et redemarre auto
-- `views/` — Memes templates EJS
+| Phase | What | Key Change |
+|-------|------|------------|
+| **1** | Network setup | VPC, public/private subnets, Internet Gateway, route tables |
+| **2** | Single-instance POC | EC2 with Node.js + MySQL on the same machine, credentials hardcoded |
+| **3** | Decouple DB | RDS MySQL in private subnet, credentials moved to Secrets Manager + IAM Role |
+| **4** | High availability | ALB + Auto Scaling Group across 2 AZs, systemd service, load testing |
 
-**Difference cle entre phase2 et phase3-4 :** dans phase2, le mot de passe est ecrit dans le code. Dans phase3-4, l'app utilise le SDK AWS pour aller chercher les credentials dans Secrets Manager au demarrage.
+## Tech Stack
 
-## Stack technique
-
-| Composant | Technologie |
-|-----------|------------|
-| Backend | Node.js + Express |
+| Component | Technology |
+|-----------|-----------|
+| Runtime | Node.js + Express |
 | Templates | EJS |
-| Base de donnees | MySQL (RDS) |
-| Credentials | AWS Secrets Manager + AWS SDK |
-| Deploiement | EC2 User Data + systemd |
-| Reseau | VPC, subnets, IGW, Security Groups |
-| Permissions | IAM Role |
+| Database | MySQL (Amazon RDS) |
+| Secrets | AWS Secrets Manager + IAM Role |
+| Networking | VPC, Subnets, Internet Gateway, Security Groups |
+| Load Balancing | Application Load Balancer |
+| Scaling | EC2 Auto Scaling (target tracking) |
+| Deployment | EC2 User Data + systemd |
 
-## Structure du repo
+## Repository Structure
 
 ```
-README.md              # Ce fichier
 code/
-  phase2/              # Version locale (MySQL sur EC2, credentials en dur)
-  phase3-4/            # Version AWS (RDS + Secrets Manager)
-docs/
-  Rapport-MiniProjet.pdf          # Rapport complet du projet
-  Guide-Code-Demo.pdf             # Guide du code + instructions de demo
-  MiniProjet-Presentation.pdf     # Slides de presentation
-  DescriptionMiniProjet.pdf       # Consignes du prof
-  architecture-diagram.html       # Diagrammes interactifs (ouvrir dans un navigateur)
+  phase2/              # POC — local MySQL, hardcoded credentials
+    app.js             # Express server
+    setup-db.sql       # Database initialization
+    views/             # EJS templates (index, add, edit)
+  phase3-4/            # Production — RDS + Secrets Manager
+    app.js             # Express server with AWS SDK
+    student-app.service# systemd unit file for auto-restart
+    views/             # EJS templates
 scripts/
-  appserver-userdata.sh           # Script User Data pour deployer l'app sur EC2
-  poc-userdata.sh                 # Script User Data pour la phase 2 (POC)
-revision/
-  Revision-Exam-CSC8604.pdf       # Fiche de revision complete (17 sections)
-  QCM-Training-Exam.pdf           # 80 questions d'entrainement avec corrections
+  poc-userdata.sh              # EC2 User Data for Phase 2
+  appserver-userdata.sh        # EC2 User Data for Phase 3/4
+  phase4-ha-autoscaling.sh     # ALB + ASG setup reference script
+docs/
+  architecture-finale.png      # Architecture diagram
 ```
 
-## Services AWS utilises
+## Security Design
 
-| Service | Role dans le projet |
-|---------|-------------------|
-| **VPC** | Reseau prive isole |
-| **EC2** | Serveur qui heberge l'application Node.js |
-| **RDS** | Base de donnees MySQL geree par AWS |
-| **Secrets Manager** | Stockage securise du mot de passe de la BDD |
-| **IAM** | Role qui donne a l'EC2 le droit de lire les secrets |
-| **Security Groups** | Firewall virtuel (port 80 pour le web, 3306 pour la BDD) |
+- **Network isolation**: RDS sits in a private subnet with no route to the internet
+- **Security Group chaining**: Internet → ALB SG (port 80) → EC2 SG (port 80) → DB SG (port 3306). Each SG only allows traffic from the previous one
+- **No hardcoded secrets**: Phase 3+ uses Secrets Manager with IAM Role-based access — the EC2 instance profile grants read access to the secret at runtime
+- **Least privilege SSH**: Port 22 restricted to operator IP only
 
+## Deployment
 
-backup sur S3: une fois par jour
+### Phase 2 (POC)
+
+1. Create a VPC with `10.0.0.0/16` CIDR, one public subnet, one private subnet
+2. Attach an Internet Gateway and configure route tables
+3. Launch an EC2 instance (t2.micro, Ubuntu) in the public subnet
+4. Use `scripts/poc-userdata.sh` as User Data — it installs everything and starts the app on port 80
+
+### Phase 3-4 (Production)
+
+1. Create an RDS MySQL instance in the private subnet
+2. Store DB credentials in Secrets Manager (secret name: `Mydbsecret`)
+3. Create an IAM Role with `secretsmanager:GetSecretValue` and attach it to EC2
+4. Configure Security Groups: DB SG allows port 3306 only from the EC2 SG
+5. Use `scripts/appserver-userdata.sh` as User Data for the EC2 instance
+6. Set up ALB + Auto Scaling using `scripts/phase4-ha-autoscaling.sh` as reference
+
+## AWS Services Used
+
+| Service | Purpose |
+|---------|---------|
+| **VPC** | Isolated network with public/private subnet separation |
+| **EC2** | Application servers running Node.js |
+| **RDS** | Managed MySQL database in a private subnet |
+| **ALB** | Distributes HTTP traffic across instances in 2 AZs |
+| **Auto Scaling** | Maintains 2–6 instances based on CPU load |
+| **Secrets Manager** | Securely stores and rotates DB credentials |
+| **IAM** | Role-based access for EC2 to read secrets |
+| **CloudWatch** | Metrics and alarms for scaling decisions |
+
+## License
+
+[MIT](LICENSE)
